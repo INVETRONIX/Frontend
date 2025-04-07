@@ -4,6 +4,8 @@
  */
 package com.project.frontend.registerUsers.view;
 
+import com.project.frontend.login.view.Login;
+
 /**
  *
  * @author juan
@@ -153,6 +155,11 @@ public class RegisterUsers extends javax.swing.JFrame {
 
         jPanel7.setBackground(new java.awt.Color(33, 3, 8));
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jPanel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                login(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -333,6 +340,12 @@ public class RegisterUsers extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void login(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_login
+        Login login = new Login();
+        login.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_login
 
     /**
      * @param args the command line arguments
