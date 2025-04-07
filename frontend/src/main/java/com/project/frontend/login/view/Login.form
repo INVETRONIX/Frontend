@@ -437,6 +437,9 @@
                             </Property>
                             <Property name="text" type="java.lang.String" value="REGISTR&#xc1;RSE"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="Register"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>

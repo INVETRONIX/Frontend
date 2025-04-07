@@ -2,7 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.project.frontend.productsSystem.view;
+package com.project.frontend.view;
+
+import com.project.frontend.productsSystem.view.PanelFormProducts;
+import com.project.frontend.suppliersSystem.view.PanelFormSuppliers;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import javax.swing.JPanel;
 
 /**
  *
@@ -18,6 +24,7 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
         setLocationRelativeTo(this);
         setResizable(false);
         pack(); 
+        showJPanel(new PanelFormProducts());
     }
 
     /**
@@ -39,7 +46,7 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
+        container = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,6 +58,11 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
         jLabel12.setText("Gestión de productos");
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Captura desde 2025-03-18 23-22-24.jpg"))); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                principal(evt);
+            }
+        });
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Captura desde 2025-03-18 13-08-00 (1).jpg"))); // NOI18N
 
@@ -89,6 +101,11 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(0, 0, 0));
 
         jPanel5.setBackground(new java.awt.Color(45, 4, 5));
+        jPanel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelProducts(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
@@ -112,6 +129,11 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
         );
 
         jPanel6.setBackground(new java.awt.Color(62, 6, 79));
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelSuppliers(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
@@ -169,17 +191,17 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
             .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        jPanel3.setBackground(new java.awt.Color(7, 27, 40));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        container.setBackground(new java.awt.Color(7, 27, 40));
+        container.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
+        container.setLayout(containerLayout);
+        containerLayout.setHorizontalGroup(
+            containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1298, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        containerLayout.setVerticalGroup(
+            containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 574, Short.MAX_VALUE)
         );
 
@@ -189,7 +211,7 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -198,12 +220,35 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(container, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void panelProducts(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelProducts
+        showJPanel(new PanelFormProducts());
+    }//GEN-LAST:event_panelProducts
+
+    private void panelSuppliers(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelSuppliers
+        showJPanel(new PanelFormSuppliers());
+    }//GEN-LAST:event_panelSuppliers
+
+    private void principal(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_principal
+        AdministradorPrincipal cambio = new AdministradorPrincipal();
+        cambio.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_principal
+
+    private void showJPanel(JPanel p){
+        p.setSize(1300,565);
+        p.setLocation(0,0);
+
+        container.removeAll();
+        container.add(p,BorderLayout.CENTER);
+        container.revalidate();
+        container.repaint();
+    }
     /**
      * @param args the command line arguments
      */
@@ -240,6 +285,7 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel container;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -247,7 +293,6 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
