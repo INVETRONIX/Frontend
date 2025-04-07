@@ -4,7 +4,6 @@
  */
 package com.project.frontend.productsSystem.view;
 
-
 /**
  *
  * @author juan
@@ -67,6 +66,11 @@ public class PanelFormProducts extends javax.swing.JPanel {
         );
 
         jPanel4.setBackground(new java.awt.Color(14, 14, 14));
+        jPanel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formProducts(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -136,6 +140,11 @@ public class PanelFormProducts extends javax.swing.JPanel {
                 .addComponent(scrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 484, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formProducts(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formProducts
+        FormProducts cambio = new FormProducts();
+        cambio.setVisible(true);
+    }//GEN-LAST:event_formProducts
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

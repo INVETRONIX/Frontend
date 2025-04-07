@@ -104,6 +104,11 @@ public class FormSuppliers extends javax.swing.JFrame {
         txtTelefono.setForeground(new java.awt.Color(255, 255, 255));
 
         jPanel13.setBackground(new java.awt.Color(255, 102, 102));
+        jPanel13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cerrar(evt);
+            }
+        });
 
         jLabel40.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel40.setForeground(new java.awt.Color(255, 255, 255));
@@ -137,7 +142,7 @@ public class FormSuppliers extends javax.swing.JFrame {
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(9, Short.MAX_VALUE)
                 .addComponent(jLabel41)
                 .addGap(15, 15, 15))
         );
@@ -175,7 +180,7 @@ public class FormSuppliers extends javax.swing.JFrame {
                         .addGap(87, 87, 87)
                         .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
-                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
@@ -254,8 +259,7 @@ public class FormSuppliers extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addGap(9, 9, 9)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(120, 120, 120))
         );
@@ -275,6 +279,10 @@ public class FormSuppliers extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cerrar(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cerrar
+       this.dispose();
+    }//GEN-LAST:event_cerrar
 
     /**
      * @param args the command line arguments
