@@ -66,6 +66,11 @@ public class PanelFormSuppliers extends javax.swing.JPanel {
         );
 
         jPanel4.setBackground(new java.awt.Color(14, 14, 14));
+        jPanel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formSuppliers(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -135,6 +140,11 @@ public class PanelFormSuppliers extends javax.swing.JPanel {
                 .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formSuppliers(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formSuppliers
+        FormSuppliers cambio = new FormSuppliers();
+        cambio.setVisible(true);
+    }//GEN-LAST:event_formSuppliers
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
