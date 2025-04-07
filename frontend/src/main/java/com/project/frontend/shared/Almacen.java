@@ -1,8 +1,9 @@
 package com.project.frontend.shared;
 
 import java.util.List;
-import com.project.frontend.registroProductos.models.Producto;
-import com.project.frontend.registroUsuarios.models.Administrador;
+
+import com.project.frontend.productsSystem.models.Producto;
+import com.project.frontend.registerUsers.models.Administrador;
 
 public class Almacen {
     private String nit;

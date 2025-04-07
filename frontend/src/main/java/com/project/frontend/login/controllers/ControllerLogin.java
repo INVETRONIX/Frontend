@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.gson.Gson;
 import com.project.frontend.login.services.ILoginService;
 import com.project.frontend.login.services.LoginService;
-import com.project.frontend.registroUsuarios.models.User;
+import com.project.frontend.registerUsers.models.User;
 import com.project.frontend.shared.ErrorResponse;
 import retrofit2.Response;
 
