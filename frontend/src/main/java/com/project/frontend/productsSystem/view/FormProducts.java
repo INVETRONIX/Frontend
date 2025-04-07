@@ -15,6 +15,9 @@ public class FormProducts extends javax.swing.JFrame {
      */
     public FormProducts() {
         initComponents();
+        setLocationRelativeTo(this);
+        setResizable(false);
+        pack(); 
     }
 
     /**

@@ -15,6 +15,9 @@ public class FormSuppliers extends javax.swing.JFrame {
      */
     public FormSuppliers() {
         initComponents();
+        setLocationRelativeTo(this);
+        setResizable(false);
+        pack(); 
     }
 
     /**
