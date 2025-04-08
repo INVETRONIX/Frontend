@@ -7,16 +7,20 @@ public class Product {
     private String description;
     private double price;
     private String category;
-    private int quantityStock;
+    private int stockQuantity;
     private Supplier supplier;
+
     
+    public Product() {
+    }
+
     public Product(String name, String description, double price, String category, int quantityStock,
             Supplier supplier) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
-        this.quantityStock = quantityStock;
+        this.stockQuantity = quantityStock;
         this.supplier = supplier;
     }
 
@@ -52,12 +56,12 @@ public class Product {
         this.category = category;
     }
 
-    public int getQuantityStock() {
-        return quantityStock;
+    public int getStockQuantity() {
+        return stockQuantity;
     }
 
-    public void setQuantityStock(int quantityStock) {
-        this.quantityStock = quantityStock;
+    public void setStockQuantity(int quantityStock) {
+        this.stockQuantity = quantityStock;
     }
 
     public Supplier GetSupplier(){
@@ -68,27 +72,5 @@ public class Product {
         this.supplier = supplier;
     }
 
-    public String toString(){
-        return "Product{" +
-        "name='" +  + '\'' +
-        ", description='" + description + '\'' +
-        ", price='" + price + '\'' +
-        ", category='" + category + '\'' +
-        ", quantityStock='" + quantityStock + '\'' +
-        "Supplier{" +
-            "id='" + supplier.getId() + '\'' +
-            ", name='" + supplier.getName() + '\'' +
-            "Store{" +
-                "nit='" + supplier.getStore().getNit() + '\'' +
-                ", products='" + supplier.getStore().getProducts() + '\'' +
-                ", name='" + supplier.getStore().getName() + '\'' +
-                ", location='" + supplier.getStore().getLocation() + '\'' +
-                "Administrator{" +
-                    "name='" + supplier.getStore().getAdministrator().getName() + '\'' +
-                    ", email='" + supplier.getStore().getAdministrator().getEmail() + '\'' +
-                    ", password='" + supplier.getStore().getAdministrator().getPassword() + '\'' +
-                    ", experiencia='" + supplier.getStore().getAdministrator().getExperience() + '\'' +
-                    ", sueldo='" + supplier.getStore().getAdministrator().getSalary() + '\'' +
-        '}';
-    }
+   
 }

@@ -1,29 +1,22 @@
 package com.project.frontend.suppliersSystem.models;
 
-import com.project.frontend.shared.Store;
-
 public class Supplier {
-    private String id;
     private String name;
-    private Store store;
+    private String company;
     private String phone;
     private String email;
 
-    public Supplier(String id, String name, Store store, String phone, String email){
-        this.id = id;
+    public Supplier(String name, String company, String phone, String email){
         this.name = name;
-        this.store = store;
+        this.company = company;
         this.phone = phone;
         this.email = email;
     }
 
-    public String getId() {
-        return id;
+
+    public Supplier() {
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -33,12 +26,12 @@ public class Supplier {
         this.name = name;
     }
 
-    public Store getStore() {
-        return store;
+    public String getCompany() {
+        return company;
     }
 
-    public void setStore(Store store) {
-        this.store = store;
+    public void setCompany(String store) {
+        this.company = store;
     }
 
     public String getPhone() {
@@ -57,21 +50,5 @@ public class Supplier {
         this.email = email;
     }
 
-    public String toString(){
-        return "Supplier{" +
-        "id='" + id + '\'' +
-        ", name='" + name + '\'' +
-        "Store{" +
-            "nit='" + store.getNit() + '\'' +
-            ", productos='" + store.getProducts() + '\'' +
-            ", nombre='" + store.getName() + '\'' +
-            ", ubicacion='" + store.getLocation() + '\'' +
-        "Administrator{" +
-            "name='" + store.getAdministrator().getName() + '\'' +
-            ", email='" + store.getAdministrator().getEmail() + '\'' +
-            ", password='" + store.getAdministrator().getPassword() + '\'' +
-            ", experiencia='" + store.getAdministrator().getExperience() + '\'' +
-            ", sueldo='" + store.getAdministrator().getSalary() + '\'' +
-            '}';
-    }
+
 }

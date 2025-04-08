@@ -1,7 +1,6 @@
 package com.project.frontend.shared;
 
 public class ErrorResponse {
-    
     private String message;
     private String status;
 

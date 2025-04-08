@@ -359,49 +359,60 @@ public class FormProducts extends javax.swing.JFrame {
     }//GEN-LAST:event_cerrar
 
     private void btnGuardar(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardar
-  try {
-        // Recoger los datos del formulario
-        String nombre = txtNombre.getText();
-        String descripcion = txtDescripcion.getText();
-        String categoria = txtCategoria.getText();
-        Double price = Double.parseDouble(txtPrecio.getText());
-        int stock = Integer.parseInt( txtStock.getText());
-        
-        // Validar campos requeridos
-        if (nombre.isEmpty() || categoria.isEmpty() || price <= 0) {
+        try {
+            // Recoger los datos del formulario
+            String nombre = txtNombre.getText();
+            String descripcion = txtDescripcion.getText();
+            String categoria = txtCategoria.getText();
+            double price = Double.parseDouble(txtPrecio.getText());
+            int stock = Integer.parseInt(txtStock.getText());
+            
+            // Validar campos requeridos (agregar validación de stock)
+            if (nombre.isEmpty() || categoria.isEmpty() || price <= 0 || stock < 1) {
+                JOptionPane.showMessageDialog(this, 
+                    "Todos los campos obligatorios deben estar completos, precio > 0 y stock ≥ 1", 
+                    "Error de validación", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Crear proveedor con TODOS los campos obligatorios
+            Supplier supplier = new Supplier(
+                "juan", 
+                "Nombre de Empresa Válido", // CAMPO OBLIGATORIO
+                "+57 3129348230", 
+                "juan@gmail.com"
+            );
+            
+            // Crear producto asegurando stock mínimo de 1
+            Product producto = new Product(
+                nombre, 
+                descripcion, 
+                price, 
+                categoria, 
+                Math.max(1, stock), // Asegurar mínimo 1
+                supplier
+            );
+            
+            // Guardar producto
+            Product resultadoGuardado = controllerProduct.saveProduct(producto);
+            
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, 
-                "Todos los campos obligatorios deben estar completos y el precio debe ser mayor a 0", 
-                "Error de validación", 
+                "Precio y stock deben ser números válidos", 
+                "Error", 
                 JOptionPane.ERROR_MESSAGE);
-            return;
-            
-            
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error de conexión: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
-        
-        Supplier supplier = new Supplier(nombre, nombre, null, nombre, nombre);
-        
-        // Crear objeto Product
-        Product producto = new Product(nombre, descripcion, price, categoria, stock, supplier);
-        
-        // Guardar producto mediante el controlador
-        Product resultadoGuardado = controllerProduct.saveProduct(producto);
-        
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, 
-            "El precio debe ser un número válido", 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, 
-            "Error de conexión: " + e.getMessage(), 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, 
-            "Error: " + e.getMessage(), 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_btnGuardar
 
     /**
