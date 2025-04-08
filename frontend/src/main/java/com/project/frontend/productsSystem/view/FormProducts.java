@@ -4,12 +4,19 @@
  */
 package com.project.frontend.productsSystem.view;
 
+import com.project.frontend.productsSystem.controllers.ControllerProduct;
+import com.project.frontend.productsSystem.models.Product;
+import com.project.frontend.suppliersSystem.models.Supplier;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author juan
  */
 public class FormProducts extends javax.swing.JFrame {
 
+    private ControllerProduct controllerProduct;
     /**
      * Creates new form FormProducts
      */
@@ -18,6 +25,7 @@ public class FormProducts extends javax.swing.JFrame {
         setLocationRelativeTo(this);
         setResizable(false);
         pack(); 
+        this.controllerProduct= new ControllerProduct();
     }
 
     /**
@@ -51,7 +59,7 @@ public class FormProducts extends javax.swing.JFrame {
         jLabel38 = new javax.swing.JLabel();
         txtStock = new javax.swing.JTextField();
         jLabel39 = new javax.swing.JLabel();
-        txtPrecio3 = new javax.swing.JTextField();
+        txtDescripcion = new javax.swing.JTextField();
         jPanel13 = new javax.swing.JPanel();
         jLabel40 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
@@ -162,8 +170,8 @@ public class FormProducts extends javax.swing.JFrame {
         jLabel39.setForeground(new java.awt.Color(255, 255, 255));
         jLabel39.setText("Descripcion");
 
-        txtPrecio3.setBackground(new java.awt.Color(0, 0, 0));
-        txtPrecio3.setForeground(new java.awt.Color(255, 255, 255));
+        txtDescripcion.setBackground(new java.awt.Color(0, 0, 0));
+        txtDescripcion.setForeground(new java.awt.Color(255, 255, 255));
 
         jPanel13.setBackground(new java.awt.Color(255, 102, 102));
         jPanel13.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -194,6 +202,11 @@ public class FormProducts extends javax.swing.JFrame {
         );
 
         jPanel14.setBackground(new java.awt.Color(51, 255, 204));
+        jPanel14.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnGuardar(evt);
+            }
+        });
 
         jLabel41.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel41.setForeground(new java.awt.Color(51, 51, 51));
@@ -228,7 +241,7 @@ public class FormProducts extends javax.swing.JFrame {
                 .addGap(44, 44, 44))
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 1044, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 1044, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel12Layout.createSequentialGroup()
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel12Layout.createSequentialGroup()
@@ -294,7 +307,7 @@ public class FormProducts extends javax.swing.JFrame {
                 .addGap(41, 41, 41)
                 .addComponent(jLabel39)
                 .addGap(18, 18, 18)
-                .addComponent(txtPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -344,6 +357,52 @@ public class FormProducts extends javax.swing.JFrame {
     private void cerrar(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cerrar
         this.dispose();
     }//GEN-LAST:event_cerrar
+
+    private void btnGuardar(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardar
+  try {
+        // Recoger los datos del formulario
+        String nombre = txtNombre.getText();
+        String descripcion = txtDescripcion.getText();
+        String categoria = txtCategoria.getText();
+        Double price = Double.parseDouble(txtPrecio.getText());
+        int stock = Integer.parseInt( txtStock.getText());
+        
+        // Validar campos requeridos
+        if (nombre.isEmpty() || categoria.isEmpty() || price <= 0) {
+            JOptionPane.showMessageDialog(this, 
+                "Todos los campos obligatorios deben estar completos y el precio debe ser mayor a 0", 
+                "Error de validación", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+            
+            
+        }
+        
+        Supplier supplier = new Supplier(nombre, nombre, null, nombre, nombre);
+        
+        // Crear objeto Product
+        Product producto = new Product(nombre, descripcion, price, categoria, stock, supplier);
+        
+        // Guardar producto mediante el controlador
+        Product resultadoGuardado = controllerProduct.saveProduct(producto);
+        
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, 
+            "El precio debe ser un número válido", 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, 
+            "Error de conexión: " + e.getMessage(), 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "Error: " + e.getMessage(), 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btnGuardar
 
     /**
      * @param args the command line arguments
@@ -401,11 +460,11 @@ public class FormProducts extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JTextField txtCategoria;
+    private javax.swing.JTextField txtDescripcion;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrecio;
     private javax.swing.JTextField txtPrecio1;
     private javax.swing.JTextField txtPrecio2;
-    private javax.swing.JTextField txtPrecio3;
     private javax.swing.JTextField txtProveedor;
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables

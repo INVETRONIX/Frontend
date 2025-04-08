@@ -209,7 +209,7 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="txtPrecio3" alignment="1" min="-2" pref="1044" max="-2" attributes="0"/>
+                          <Component id="txtDescripcion" alignment="1" min="-2" pref="1044" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
@@ -295,7 +295,7 @@
                       <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                       <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="txtPrecio3" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="txtDescripcion" min="-2" pref="36" max="-2" attributes="0"/>
                       <EmptySpace pref="48" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanel14" min="-2" max="-2" attributes="0"/>
@@ -442,7 +442,7 @@
                 <Property name="text" type="java.lang.String" value="Descripcion"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtPrecio3">
+            <Component class="javax.swing.JTextField" name="txtDescripcion">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="0" type="rgb"/>
@@ -502,6 +502,9 @@
                   <Color blue="cc" green="ff" red="33" type="rgb"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnGuardar"/>
+              </Events>
 
               <Layout>
                 <DimensionLayout dim="0">
