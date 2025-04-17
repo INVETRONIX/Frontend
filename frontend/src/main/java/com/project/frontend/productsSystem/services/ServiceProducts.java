@@ -1,64 +1,69 @@
 package com.project.frontend.productsSystem.services;
 
-import java.util.List;
 import com.project.frontend.productsSystem.models.Product;
+import com.project.frontend.productsSystem.services.in.IDeleteProduct;
+import com.project.frontend.productsSystem.services.in.IFindProductsByFilters;
+import com.project.frontend.productsSystem.services.in.IGetAllProducts;
+import com.project.frontend.productsSystem.services.in.IGetProductById;
+import com.project.frontend.productsSystem.services.in.IUpdateProduct;
+import com.project.frontend.productsSystem.services.in.IsaveProduct;
+import com.project.frontend.productsSystem.services.usecases.DeleteProduct;
+import com.project.frontend.productsSystem.services.usecases.FindProductsByFilters;
+import com.project.frontend.productsSystem.services.usecases.GetAllProducts;
+import com.project.frontend.productsSystem.services.usecases.GetProductById;
+import com.project.frontend.productsSystem.services.usecases.SaveProduct;
+import com.project.frontend.productsSystem.services.usecases.UpdateProduct;
+import lombok.Builder;
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ServiceProducts implements IServiceProducts{
-
-    //agregamos el puerto donde esta corriendo el servicio
-    private final String BASE_URL = "http://localhost:8080";
-
-    //agregamos la capa de abstraccion para usar el servicio ya que ahí es donde estan las rutas de la api rest
-    private final IServiceProducts apiService;
-
-    //en este constructor se instancia retrofit con la url del puerto donde esta corriendo el servicio
-    //tambien inicializamos el servicio, osea la capa de abstraccion
-    public ServiceProducts(){
-        Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+@Builder
+public class ServiceProducts {
+    private final IDeleteProduct deleteProduct;
+    private final IFindProductsByFilters findProductsByFilters;
+    private final IGetAllProducts getAllProducts;
+    private final IGetProductById getProductById;
+    private final IsaveProduct saveProduct;
+    private final IUpdateProduct updateProduct;
+    
+    // Factory method to create a fully initialized ServiceProducts
+    public static ServiceProducts createDefault() {
+        return ServiceProducts.builder()
+            .deleteProduct(new DeleteProduct())
+            .findProductsByFilters(new FindProductsByFilters())
+            .getAllProducts(new GetAllProducts())
+            .getProductById(new GetProductById())
+            .saveProduct(new SaveProduct())
+            .updateProduct(new UpdateProduct())
             .build();
-
-        this.apiService = retrofit.create(IServiceProducts.class);
     }
 
-
-    @Override
-    public Call<Product> saveProduct(Product user) {
-        return apiService.saveProduct(user);
+    @SuppressWarnings("unchecked")
+    public <T> Call<T> operation(String query, Object... params) {
+        switch (query) {
+            case "POST":
+                return (Call<T>) saveProduct.saveProduct((Product) params[0]);
+            
+            case "GET_BY_ID":
+                return (Call<T>) getProductById.getProductById((String) params[0]);
+                
+            case "GET_ALL":
+                return (Call<T>) getAllProducts.getAllProducts();
+                
+            case "UPDATE":
+                return (Call<T>) updateProduct.updateProduct((String) params[0], (Product) params[1]);
+                
+            case "DELETE":
+                return (Call<T>) deleteProduct.deleteProduct((String) params[0]);
+                
+            case "GET_BY_FILTERS":
+                return (Call<T>) findProductsByFilters.findByFilters(
+                    (String) params[0], 
+                    (String) params[1], 
+                    (String) params[2]
+                );
+                
+            default:
+                throw new IllegalArgumentException("Unknown operation: " + query);
+        }
     }
-
-
-    @Override
-    public Call<Product> getProductById(String id) {
-        return apiService.getProductById(id);
-    }
-
-
-    @Override
-    public Call<List<Product>> getAllProducts() {
-        return apiService.getAllProducts();
-    }
-
-
-    @Override
-    public Call<Product> updateProduct(String id, Product product) {
-        return apiService.updateProduct(id, product);
-    }
-
-
-    @Override
-    public Call<Void> deleteProduct(String id) {
-        return apiService.deleteProduct(id);
-    }
-
-
-    @Override
-    public Call<List<Product>> findByFilters(String nameProduct, String category, String nameSupplier) {
-        return apiService.findByFilters(nameProduct, category, nameSupplier);
-    } 
-
 }

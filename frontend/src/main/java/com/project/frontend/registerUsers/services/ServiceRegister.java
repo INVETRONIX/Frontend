@@ -1,7 +1,6 @@
 package com.project.frontend.registerUsers.services;
 
-import com.project.frontend.registerUsers.models.User;
-
+import com.project.frontend.registerUsers.models.Client;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -21,8 +20,8 @@ public class ServiceRegister implements IServiceRegister{
     }
 
     @Override
-    public Call<User> register(User user) {
-        return apiService.register(user);
+    public Call<Client> save(Client user) {
+        return apiService.save(user);
     }
     
 }

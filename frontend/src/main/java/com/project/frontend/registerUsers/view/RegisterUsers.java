@@ -5,13 +5,10 @@
 package com.project.frontend.registerUsers.view;
 
 import java.io.IOException;
-
 import javax.swing.JOptionPane;
-
 import com.project.frontend.login.view.Login;
 import com.project.frontend.registerUsers.controllers.ControllerRegister;
-import com.project.frontend.registerUsers.models.Cliente;
-import com.project.frontend.registerUsers.models.User;
+import com.project.frontend.registerUsers.models.Client;
 
 /**
  *
@@ -24,7 +21,7 @@ public class RegisterUsers extends javax.swing.JFrame {
      * Creates new form RegisterUsers
      */
     public RegisterUsers() {
-        initComponents();
+        initComponents(); 
         setLocationRelativeTo(this);
         setResizable(false);
         pack(); 
@@ -363,15 +360,20 @@ public class RegisterUsers extends javax.swing.JFrame {
 
     private void registrarse(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrarse
         try{
+            
             String name= txtName.getText();
             String email=txtEmail.getText();
             String password = txtPassword.getText();
             String phone = txtPhone.getText();
             int age = Integer.parseInt(txtAge.getText());
             
-            User cliente = new Cliente(name, email, password, phone, age);
+            Client cliente = new Client(name, email, password, phone, age);
+
+            Object[] countain = new Object[1];
+            countain[0] = cliente;
             
-            controllerRegister.register(cliente);
+            controllerRegister.operation("POST", countain);
+
         }catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, 
             "La edad debe ser un número válido", 

@@ -1,119 +1,67 @@
 package com.project.frontend.productsSystem.controllers;
 
 import java.io.IOException;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.google.gson.Gson;
+import com.project.frontend.productsSystem.controllers.components.DeleteOperation;
+import com.project.frontend.productsSystem.controllers.components.GetByFiltersOperation;
+import com.project.frontend.productsSystem.controllers.components.GetAllOperation;
+import com.project.frontend.productsSystem.controllers.components.GetOperation;
+import com.project.frontend.productsSystem.controllers.components.SaveOperation;
+import com.project.frontend.productsSystem.controllers.components.UpdateOperation;
+import com.project.frontend.productsSystem.controllers.in.IDeleteOperation;
+import com.project.frontend.productsSystem.controllers.in.IGetAllOperation;
+import com.project.frontend.productsSystem.controllers.in.IGetByFiltersOperation;
+import com.project.frontend.productsSystem.controllers.in.IGetOperation;
+import com.project.frontend.productsSystem.controllers.in.ISaveOperation;
+import com.project.frontend.productsSystem.controllers.in.IUpdateOperation;
 import com.project.frontend.productsSystem.models.Product;
-import com.project.frontend.productsSystem.services.IServiceProducts;
 import com.project.frontend.productsSystem.services.ServiceProducts;
-import com.project.frontend.shared.ErrorResponse;
-import retrofit2.Response;
 
 public class ControllerProduct {
-    private final IServiceProducts serviceProducts;
-    private final Gson gson = new Gson();
 
-    @Autowired
-    public ControllerProduct(){
-        this.serviceProducts= new ServiceProducts();
+    private final IDeleteOperation deleteOperation;
+    private final IGetByFiltersOperation getByFiltersOperation;
+    private final IGetAllOperation getAllOperation;
+    private final IGetOperation getOperation;
+    private final ISaveOperation saveOperation;
+    private final IUpdateOperation updateOperation;
+
+    public ControllerProduct() {
+        ServiceProducts serviceProducts = ServiceProducts.createDefault();
+        
+        this.deleteOperation = new DeleteOperation(serviceProducts);
+        this.getByFiltersOperation = new GetByFiltersOperation(serviceProducts);
+        this.getAllOperation = new GetAllOperation(serviceProducts);
+        this.getOperation = new GetOperation(serviceProducts);
+        this.saveOperation = new SaveOperation(serviceProducts);
+        this.updateOperation = new UpdateOperation(serviceProducts);
     }
 
-    public Product saveProduct(Product product) throws IOException {
-        Response<Product> response = serviceProducts.saveProduct(product).execute();
-        if (response.isSuccessful() && response.body() != null) {
-            SwingUtilities.invokeLater(() -> 
-                mostrarMensaje("Producto guardado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE));
-            return response.body();
-        } else {
-            manejarErrorAsync(response);
-            return null;
+    public Object operation(String query, Object... params) throws IOException {
+        switch (query) {
+            case "POST":
+                return saveOperation.saveProduct((Product) params[0]);
+            
+            case "GET_BY_ID":
+                return getOperation.getProductById((String) params[0]);
+                
+            case "GET_ALL":
+                return getAllOperation.getAllProducts();
+                
+            case "UPDATE":
+                return updateOperation.updateProduct((String) params[0], (Product) params[1]);
+                
+            case "DELETE":
+                return deleteOperation.deleteProduct((String) params[0]);
+                
+            case "GET_BY_FILTERS":
+                return getByFiltersOperation.findByFilters(
+                    (String) params[0], 
+                    (String) params[1], 
+                    (String) params[2]
+                );
+                
+            default:
+                throw new IllegalArgumentException("Unknown operation: " + query);
         }
     }
-
-    public Product getProductById(String id) throws IOException {
-        Response<Product> response = serviceProducts.getProductById(id).execute();
-        if (response.isSuccessful() && response.body() != null) {
-            return response.body();
-        } else {
-            manejarErrorAsync(response);
-            return null;
-        }
-    }
-
-    public List<Product> getAllProducts() throws IOException {
-        Response<List<Product>> response = serviceProducts.getAllProducts().execute();
-        if (response.isSuccessful() && response.body() != null) {
-            return response.body();
-        } else {
-            manejarErrorAsync(response);
-            return null;
-        }
-    }
-
-    public Product updateProduct(String id, Product product) throws IOException {
-        Response<Product> response = serviceProducts.updateProduct(id, product).execute();
-        if (response.isSuccessful() && response.body() != null) {
-            SwingUtilities.invokeLater(() -> 
-                mostrarMensaje("Producto actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE));
-            return response.body();
-        } else {
-            manejarErrorAsync(response);
-            return null;
-        }
-    }
-
-    public boolean deleteProduct(String id) throws IOException {
-        Response<Void> response = serviceProducts.deleteProduct(id).execute();
-        if (response.isSuccessful()) {
-            SwingUtilities.invokeLater(() -> 
-                mostrarMensaje("Producto eliminado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE));
-            return true;
-        } else {
-            manejarErrorAsync(response);
-            return false;
-        }
-    }
-
-    public List<Product> findByFilters(String nameProduct, String category, String nameSupplier) throws IOException {
-        Response<List<Product>> response = serviceProducts.findByFilters(nameProduct, category, nameSupplier).execute();
-        if (response.isSuccessful() && response.body() != null) {
-            return response.body();
-        } else {
-            manejarErrorAsync(response);
-            return null;
-        }
-    }
-
-    private void manejarErrorAsync(Response<?> response) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                manejarError(response);
-            } catch (IOException e) {
-                mostrarMensaje("Error de conexión: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-    }
-
-    private void manejarError(Response<?> response) throws IOException {
-        String errorBody = response.errorBody() != null ? response.errorBody().string() : "";
-        if (!errorBody.isEmpty()) {
-            try {
-                ErrorResponse errorResponse = gson.fromJson(errorBody, ErrorResponse.class);
-                mostrarMensaje(errorResponse.getMessage(), "Error (" + response.code() + ")", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                mostrarMensaje("Error " + response.code() + ": " + errorBody, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            mostrarMensaje("Error " + response.code(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void mostrarMensaje(String mensaje, String titulo, int tipo) {
-        JOptionPane.showMessageDialog(null, mensaje, titulo, tipo);
-    }
-
-
 }

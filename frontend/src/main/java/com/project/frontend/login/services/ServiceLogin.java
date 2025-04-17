@@ -1,6 +1,7 @@
 package com.project.frontend.login.services;
 
-import com.project.frontend.registerUsers.models.User;
+import com.project.frontend.login.services.in.IServiceLogin;
+import com.project.frontend.registerUsers.models.Client;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,9 +21,8 @@ public class ServiceLogin implements IServiceLogin{
     }
 
     @Override
-    public Call<User> login(String email, String password) {
-        return apiService.login(email,password);
+    public Call<Client> login(String email, String password) {
+        return apiService.login(email, password);
     }
-
     
 }
