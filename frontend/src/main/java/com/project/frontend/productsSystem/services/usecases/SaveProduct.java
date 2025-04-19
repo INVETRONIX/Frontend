@@ -1,14 +1,15 @@
 package com.project.frontend.productsSystem.services.usecases;
 
 import com.project.frontend.productsSystem.models.Product;
-import com.project.frontend.productsSystem.services.in.IsaveProduct;
+import com.project.frontend.productsSystem.services.in.ISaveProduct;
+
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SaveProduct implements IsaveProduct {
+public class SaveProduct implements ISaveProduct {
     private final String BASE_URL = "http://localhost:8080";
-    private final IsaveProduct service;
+    private final ISaveProduct service;
 
     public SaveProduct() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -16,7 +17,7 @@ public class SaveProduct implements IsaveProduct {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-        this.service = retrofit.create(IsaveProduct.class);
+        this.service = retrofit.create(ISaveProduct.class);
     }
 
   

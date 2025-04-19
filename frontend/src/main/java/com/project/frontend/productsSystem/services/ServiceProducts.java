@@ -5,8 +5,8 @@ import com.project.frontend.productsSystem.services.in.IDeleteProduct;
 import com.project.frontend.productsSystem.services.in.IFindProductsByFilters;
 import com.project.frontend.productsSystem.services.in.IGetAllProducts;
 import com.project.frontend.productsSystem.services.in.IGetProductById;
+import com.project.frontend.productsSystem.services.in.ISaveProduct;
 import com.project.frontend.productsSystem.services.in.IUpdateProduct;
-import com.project.frontend.productsSystem.services.in.IsaveProduct;
 import com.project.frontend.productsSystem.services.usecases.DeleteProduct;
 import com.project.frontend.productsSystem.services.usecases.FindProductsByFilters;
 import com.project.frontend.productsSystem.services.usecases.GetAllProducts;
@@ -22,7 +22,7 @@ public class ServiceProducts {
     private final IFindProductsByFilters findProductsByFilters;
     private final IGetAllProducts getAllProducts;
     private final IGetProductById getProductById;
-    private final IsaveProduct saveProduct;
+    private final ISaveProduct saveProduct;
     private final IUpdateProduct updateProduct;
     
     // Factory method to create a fully initialized ServiceProducts
