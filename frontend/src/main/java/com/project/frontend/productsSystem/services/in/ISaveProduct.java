@@ -5,7 +5,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface IsaveProduct {
+public interface ISaveProduct {
     @POST("/api/products")
     Call<Product> saveProduct(@Body Product user);
 }

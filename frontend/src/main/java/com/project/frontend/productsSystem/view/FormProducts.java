@@ -395,7 +395,7 @@ public class FormProducts extends javax.swing.JFrame {
             );
             
             // Guardar producto
-            Product resultadoGuardado = controllerProduct.saveProduct(producto);
+            Product resultadoGuardado = controllerProduct.operation(producto);
             
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, 
