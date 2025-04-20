@@ -6,7 +6,6 @@ package com.project.frontend.view;
 
 import com.project.frontend.productsSystem.view.PanelFormProducts;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import javax.swing.JPanel;
 
 /**
