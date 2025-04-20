@@ -5,7 +5,6 @@
 package com.project.frontend.view;
 
 import com.project.frontend.productsSystem.view.PanelFormProducts;
-import com.project.frontend.suppliersSystem.view.PanelFormSuppliers;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import javax.swing.JPanel;
@@ -128,12 +127,6 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel6.setBackground(new java.awt.Color(62, 6, 79));
-        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                panelSuppliers(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Dyuthi", 1, 24)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
@@ -229,10 +222,6 @@ public class AdministradorPrincipalGestion extends javax.swing.JFrame {
     private void panelProducts(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelProducts
         showJPanel(new PanelFormProducts());
     }//GEN-LAST:event_panelProducts
-
-    private void panelSuppliers(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelSuppliers
-        showJPanel(new PanelFormSuppliers());
-    }//GEN-LAST:event_panelSuppliers
 
     private void principal(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_principal
         AdministradorPrincipal cambio = new AdministradorPrincipal();
