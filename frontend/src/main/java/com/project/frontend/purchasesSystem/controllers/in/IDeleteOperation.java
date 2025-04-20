@@ -1,5 +1,7 @@
 package com.project.frontend.purchasesSystem.controllers.in;
 
-public interface IDeleteOperation {
+import java.io.IOException;
 
+public interface IDeleteOperation {
+    boolean deletePurchase(String id) throws IOException;
 }
