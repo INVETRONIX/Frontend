@@ -2,12 +2,10 @@ package com.project.frontend.productsSystem.controllers.components;
 
 import java.io.IOException;
 import java.util.List;
-
 import com.project.frontend.productsSystem.controllers.in.IGetOperation;
 import com.project.frontend.productsSystem.models.Product;
 import com.project.frontend.productsSystem.services.ServiceProducts;
 import com.project.frontend.shared.handlers.HandlerError;
-
 import lombok.RequiredArgsConstructor;
 import retrofit2.Call;
 import retrofit2.Response;
