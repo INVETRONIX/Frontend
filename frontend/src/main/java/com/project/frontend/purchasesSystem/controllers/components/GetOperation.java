@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import com.project.frontend.productsSystem.models.Product;
 import com.project.frontend.purchasesSystem.controllers.in.IGetOperation;
 import com.project.frontend.purchasesSystem.models.Purchase;
 import com.project.frontend.purchasesSystem.services.ServicePurchases;

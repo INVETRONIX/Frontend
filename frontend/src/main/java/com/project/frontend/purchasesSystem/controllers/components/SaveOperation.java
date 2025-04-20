@@ -3,7 +3,6 @@ package com.project.frontend.purchasesSystem.controllers.components;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import com.project.frontend.productsSystem.models.Product;
 import com.project.frontend.purchasesSystem.controllers.in.ISaveOperation;
 import com.project.frontend.purchasesSystem.models.Purchase;
 import com.project.frontend.purchasesSystem.services.ServicePurchases;

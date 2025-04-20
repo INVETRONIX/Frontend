@@ -3,10 +3,8 @@ package com.project.frontend.purchasesSystem.services.usecases;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
 import com.project.frontend.purchasesSystem.models.Purchase;
 import com.project.frontend.purchasesSystem.services.in.IFindPurchasesByFilters;
-
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,8 +24,8 @@ public class FindPurchaseByFilters implements IFindPurchasesByFilters{
     }
 
     @Override
-    public Call<List<Purchase>> findByFilters(String nameClient, LocalTime hour, LocalDate date) {
-        return this.service.findByFilters(nameClient, hour, date);
+    public Call<List<Purchase>> findByFilters(String nameClient, LocalDate date, LocalTime hour) {
+        return this.service.findByFilters(nameClient, date, hour);
     }
 
     

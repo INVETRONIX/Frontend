@@ -3,6 +3,10 @@ package com.project.frontend.purchasesSystem.controllers;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import com.project.frontend.purchasesSystem.controllers.components.DeleteOperation;
+import com.project.frontend.purchasesSystem.controllers.components.GetOperation;
+import com.project.frontend.purchasesSystem.controllers.components.SaveOperation;
+import com.project.frontend.purchasesSystem.controllers.components.UpdateOperation;
 import com.project.frontend.purchasesSystem.controllers.in.IDeleteOperation;
 import com.project.frontend.purchasesSystem.controllers.in.IGetOperation;
 import com.project.frontend.purchasesSystem.controllers.in.ISaveOperation;
@@ -19,10 +23,10 @@ public class ControllerPurchase {
     public ControllerPurchase() {
         ServicePurchases servicePurchases = ServicePurchases.createDefault();
         
-        this.deleteOperation = new DeleteOperation(ServicePurchases);
-        this.getOperation = new GetOperation(ServicePurchases);
-        this.saveOperation = new SaveOperation(ServicePurchases);
-        this.updateOperation = new UpdateOperation(ServicePurchases);
+        this.deleteOperation = new DeleteOperation(servicePurchases);
+        this.getOperation = new GetOperation(servicePurchases);
+        this.saveOperation = new SaveOperation(servicePurchases);
+        this.updateOperation = new UpdateOperation(servicePurchases);
     }
 
     public Object operation(String query, Object... params) throws IOException {
