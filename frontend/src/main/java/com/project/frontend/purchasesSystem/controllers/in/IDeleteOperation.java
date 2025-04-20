@@ -1,5 +1,5 @@
 package com.project.frontend.purchasesSystem.controllers.in;
 
-public interface ISaveOperationPurchase {
+public interface IDeleteOperation {
 
 }

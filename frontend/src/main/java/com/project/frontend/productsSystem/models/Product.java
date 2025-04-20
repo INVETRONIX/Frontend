@@ -1,6 +1,5 @@
 package com.project.frontend.productsSystem.models;
 
-import com.project.frontend.suppliersSystem.models.Supplier;
 
 public class Product {
     private String name;
@@ -8,14 +7,13 @@ public class Product {
     private double price;
     private String category;
     private int stockQuantity;
-    private Supplier supplier;
-
+    private String supplier;
     
     public Product() {
     }
 
     public Product(String name, String description, double price, String category, int quantityStock,
-            Supplier supplier) {
+    String supplier) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -64,11 +62,11 @@ public class Product {
         this.stockQuantity = quantityStock;
     }
 
-    public Supplier GetSupplier(){
+    public String GetSupplier(){
         return supplier;
     }
 
-    public void setIdSupplier(Supplier supplier){
+    public void setIdSupplier(String supplier){
         this.supplier = supplier;
     }
 

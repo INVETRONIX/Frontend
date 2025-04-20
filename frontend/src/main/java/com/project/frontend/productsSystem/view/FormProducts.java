@@ -376,13 +376,7 @@ public class FormProducts extends javax.swing.JFrame {
                 return;
             }
             
-            // Crear proveedor con TODOS los campos obligatorios
-            Supplier supplier = new Supplier(
-                "juan", 
-                "Nombre de Empresa Válido", // CAMPO OBLIGATORIO
-                "+57 3129348230", 
-                "juan@gmail.com"
-            );
+
             
             // Crear producto asegurando stock mínimo de 1
             Product producto = new Product(
@@ -391,7 +385,7 @@ public class FormProducts extends javax.swing.JFrame {
                 price, 
                 categoria, 
                 Math.max(1, stock), // Asegurar mínimo 1
-                supplier
+                
             );
             
             // Guardar producto
