@@ -7,5 +7,5 @@ import retrofit2.http.POST;
 
 public interface ISaveProduct {
     @POST("/api/products")
-    Call<Product> saveProduct(@Body Product user);
+    Call<Product> saveProduct(@Body Product product);
 }
