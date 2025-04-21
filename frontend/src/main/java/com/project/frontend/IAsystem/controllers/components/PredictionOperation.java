@@ -21,8 +21,6 @@ public class PredictionOperation implements IPredictionOperation{
     public String prediccion() throws IOException {
         Response<String> response = serviceIA.prediccion().execute();
         if(response.isSuccessful() && response.body() != null){
-            SwingUtilities.invokeLater(() -> 
-            HandlerMessage.mostrarMensaje("Bienvenido!", "Éxito", JOptionPane.INFORMATION_MESSAGE));
             return response.body();
         }else{
             SwingUtilities.invokeLater(() -> {
