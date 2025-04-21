@@ -21,8 +21,8 @@ public class SaveProduct implements ISaveProduct {
     }
 
   
-    public Call<Product> saveProduct(Product user) {
-        return service.saveProduct(user);
+    public Call<Product> saveProduct(Product product) {
+        return service.saveProduct(product);
     }
 
 }
