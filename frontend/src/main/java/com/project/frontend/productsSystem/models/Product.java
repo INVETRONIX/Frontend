@@ -2,6 +2,7 @@ package com.project.frontend.productsSystem.models;
 
 
 public class Product {
+    private String id;
     private String name;
     private String description;
     private double price;
@@ -12,13 +13,39 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String description, double price, String category, int quantityStock,
+    public Product(String id, String name, String description, double price, String category, int quantityStock,
     String supplier) {
+        this.id=id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
         this.stockQuantity = quantityStock;
+        this.supplier = supplier;
+    }
+
+    public Product(String name, String description, double price, String category, int stockQuantity, String supplier) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.stockQuantity = stockQuantity;
+        this.supplier = supplier;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
         this.supplier = supplier;
     }
 
@@ -70,5 +97,4 @@ public class Product {
         this.supplier = supplier;
     }
 
-   
 }

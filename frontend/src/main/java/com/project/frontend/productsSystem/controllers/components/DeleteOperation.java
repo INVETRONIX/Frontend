@@ -20,7 +20,7 @@ public class DeleteOperation implements IDeleteOperation{
         Response<Void> response = call.execute();
         if (response.isSuccessful()) {
             SwingUtilities.invokeLater(() -> 
-                HandlerMessage.mostrarMensaje("Producto eliminado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE));
+            HandlerMessage.mostrarMensaje("Producto eliminado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE));
             return true;
         } else {
             HandlerError.manejarErrorAsync(response);

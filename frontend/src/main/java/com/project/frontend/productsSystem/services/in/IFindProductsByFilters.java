@@ -7,7 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface IFindProductsByFilters {
-        @GET("/api/products/search")
+    @GET("/api/products/search")
     Call<List<Product>> findByFilters(
         @Query("nameProduct") String nameProduct,
         @Query("category") String category,

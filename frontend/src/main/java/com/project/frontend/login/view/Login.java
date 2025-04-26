@@ -7,7 +7,8 @@ package com.project.frontend.login.view;
 import com.project.frontend.login.controllers.ControllerLogin;
 import com.project.frontend.registerUsers.models.Client;
 import com.project.frontend.registerUsers.view.RegisterUsers;
-import com.project.frontend.view.AdministradorPrincipal;
+import com.project.frontend.view.AdminPrincipal;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -316,7 +317,7 @@ public class Login extends javax.swing.JFrame {
             if (txtUser.getText().isEmpty() || txtPassword.getText().isEmpty()) {
                 if(txtPassword.getText().isEmpty()){
                     if(txtUser.getText().equals("@eam.edu.co")){
-                        AdministradorPrincipal cambio = new AdministradorPrincipal();
+                        AdminPrincipal cambio = new AdminPrincipal();
                         cambio.setVisible(true);
                         this.dispose();
                         return;

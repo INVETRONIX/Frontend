@@ -27,7 +27,7 @@ public class GetOperation implements IGetOperation{
         }
     }
 
-     @Override
+    @Override
     public List<Product> getAllProducts() throws IOException {
         Call<List<Product>> call = serviceProducts.operation("GET_ALL");
         Response<List<Product>> response = call.execute();
