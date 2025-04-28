@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.project.frontend.view;
+package com.project.frontend.IAsystem.view;
 
-import com.project.frontend.IAsystem.view.AdminReporteIA;
+import com.project.frontend.IAsystem.controllers.ControllerIA;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -12,7 +14,8 @@ import com.project.frontend.IAsystem.view.AdminReporteIA;
  * @author sebastian
  */
 public class AdminNotificaciones extends javax.swing.JFrame {
-
+    private ControllerIA controllerIa;
+    
     /**
      * Creates new form VentanaNotificacionesAdministrador
      */
@@ -21,6 +24,7 @@ public class AdminNotificaciones extends javax.swing.JFrame {
         setLocationRelativeTo(this);
         setResizable(false);
         pack();
+        this.controllerIa= new ControllerIA();
     }
 
     /**
@@ -94,9 +98,19 @@ public class AdminNotificaciones extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
-        AdminReporteIA cambio = new AdminReporteIA();
-        cambio.setVisible(true);
-        this.dispose();
+        try {
+            JOptionPane.showMessageDialog(
+                    null,
+                    controllerIa.operation(),
+                    "✅ Prediccion IA",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } catch (IOException ex) {
+              JOptionPane.showMessageDialog(this, 
+                "Error inesperado: " + ex.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnGenerarReporteActionPerformed
 
 

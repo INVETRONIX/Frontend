@@ -8,7 +8,6 @@ import javax.swing.JOptionPane;
 
 import com.project.frontend.productsSystem.controllers.ControllerProduct;
 import com.project.frontend.productsSystem.models.Product;
-import com.project.frontend.registerUsers.models.Client;
 import com.project.frontend.view.AdminRegistroProductos;
 
 

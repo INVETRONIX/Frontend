@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import com.project.frontend.IAsystem.controllers.in.IPredictionOperation;
+import com.project.frontend.IAsystem.models.PredictionResponse;
 import com.project.frontend.IAsystem.services.ServiceIA;
 import com.project.frontend.IAsystem.services.in.IServiceIA;
 import com.project.frontend.shared.handlers.HandlerError;
@@ -19,10 +20,10 @@ public class PredictionOperation implements IPredictionOperation{
 
     @Override
     public String prediccion() throws IOException {
-        Response<String> response = serviceIA.prediccion().execute();
+        Response<PredictionResponse> response = serviceIA.prediccion().execute();
         if(response.isSuccessful() && response.body() != null){
-            return response.body();
-        }else{
+            return response.body().getPrediccion(); // Obtener el String de la respuesta JSON
+        } else {
             SwingUtilities.invokeLater(() -> {
                 try {
                     HandlerError.manejarError(response);

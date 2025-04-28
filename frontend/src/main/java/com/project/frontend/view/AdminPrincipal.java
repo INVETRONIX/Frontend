@@ -4,6 +4,8 @@
  */
 package com.project.frontend.view;
 
+import com.project.frontend.IAsystem.view.AdminNotificaciones;
+
 /**
  *
  * @author sebastian

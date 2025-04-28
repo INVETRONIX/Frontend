@@ -1,5 +1,6 @@
 package com.project.frontend.IAsystem.services;
 
+import com.project.frontend.IAsystem.models.PredictionResponse;
 import com.project.frontend.IAsystem.services.in.IServiceIA;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -19,7 +20,7 @@ public class ServiceIA implements IServiceIA{
     }
 
     @Override
-    public Call<String> prediccion() {
+    public Call<PredictionResponse> prediccion() {
         return apIServiceIA.prediccion();
     }
     
