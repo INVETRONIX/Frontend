@@ -1,12 +1,14 @@
 package com.project.frontend.purchasesSystem.models;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import com.project.frontend.productsSystem.models.Product;
 import com.project.frontend.registerUsers.models.Client;
 
-public class Purchase {
+public class Purchase implements Serializable{
+    private static final long serialVersionUID = 1L;
     private Client client;
     private LocalTime hour;
     private LocalDate date;

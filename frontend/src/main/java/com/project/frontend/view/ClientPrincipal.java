@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import com.project.frontend.productsSystem.controllers.ControllerProduct;
 import com.project.frontend.productsSystem.models.Product;
+import com.project.frontend.view.database.Data;
 
 /**
  *
@@ -64,7 +65,6 @@ public class ClientPrincipal extends javax.swing.JFrame {
             ClientDevoluciones cambio = new ClientDevoluciones();
             cambio.setVisible(true);
         });
-        
         
         
         
@@ -252,11 +252,17 @@ public class ClientPrincipal extends javax.swing.JFrame {
         panelBotones.setPreferredSize(new Dimension(120, 130));
         
         
-        // Botón Eliminar
+        // Botón Comprar
         JButton btnComprar = new JButton("Comprar");
         btnComprar.setPreferredSize(new Dimension(100, 30));
         btnComprar.addActionListener(e -> {
-            System.out.println("Eliminar producto " + id);
+            
+            System.out.println("Id real: " + product.getId());
+            List<Product> carrito = Data.getInstance().read();
+
+            carrito.add(product);
+
+            Data.getInstance().write(carrito);
         });
         
         panelBotones.add(btnComprar);
