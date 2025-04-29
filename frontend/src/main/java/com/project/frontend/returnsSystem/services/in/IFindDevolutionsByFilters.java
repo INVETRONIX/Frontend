@@ -11,10 +11,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface IFindDevolutionsByFilters {
-        @GET("/api/devolutions/search")
+        @GET("/api/devolution/search")
     Call<List<Devolution>> findByFilters(
         @Query("nameClient") String nameClient,
-        @Query("hour") LocalDate date,
-        @Query("data") LocalTime hour    
+        @Query("hour") String date,
+        @Query("data") String hour    
     );
 }

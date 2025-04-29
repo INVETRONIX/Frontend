@@ -7,6 +7,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface IGetDevolutionById {
-    @GET("/api/devolutions/{id}")
+    @GET("/api/devolution/{id}")
     Call<Devolution> getDevolutionById(@Path("id") String id);
 }

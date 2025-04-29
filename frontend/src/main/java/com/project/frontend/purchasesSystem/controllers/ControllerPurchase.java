@@ -1,8 +1,7 @@
 package com.project.frontend.purchasesSystem.controllers;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 import com.project.frontend.purchasesSystem.controllers.components.DeleteOperation;
 import com.project.frontend.purchasesSystem.controllers.components.GetOperation;
 import com.project.frontend.purchasesSystem.controllers.components.SaveOperation;
@@ -49,8 +48,8 @@ public class ControllerPurchase {
             case "GET_BY_FILTERS":
                 return getOperation.findByFilters(
                     (String) params[0], 
-                    (LocalDate) params[1], 
-                    (LocalTime) params[2]
+                    (String) params[1], 
+                    (String) params[2]
                 );
                 
             default:

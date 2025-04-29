@@ -8,6 +8,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface IGetAllDevolutions {
-    @GET("/api/devolutions")
+    @GET("/api/devolution")
     Call<List<Devolution>> getAllDevolutions();
 }

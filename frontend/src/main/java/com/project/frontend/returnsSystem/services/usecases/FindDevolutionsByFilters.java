@@ -26,7 +26,7 @@ public class FindDevolutionsByFilters implements IFindDevolutionsByFilters {
     }
 
     @Override
-    public Call<List<Devolution>> findByFilters(String nameClient, LocalDate date, LocalTime hour) {
+    public Call<List<Devolution>> findByFilters(String nameClient, String date, String hour) {
         return this.service.findByFilters(nameClient, date, hour);
     }
 

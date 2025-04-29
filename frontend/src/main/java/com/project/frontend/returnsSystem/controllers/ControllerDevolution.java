@@ -51,8 +51,8 @@ public class ControllerDevolution {
             case "GET_BY_FILTERS":
                 return getOperation.findByFilters(
                     (String) params[0], 
-                    (LocalDate) params[1], 
-                    (LocalTime) params[2]
+                    (String) params[1], 
+                    (String) params[2]
                 );
                 
             default:
