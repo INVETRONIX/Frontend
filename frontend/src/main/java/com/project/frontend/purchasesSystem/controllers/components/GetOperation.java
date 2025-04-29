@@ -1,8 +1,6 @@
 package com.project.frontend.purchasesSystem.controllers.components;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import com.project.frontend.purchasesSystem.controllers.in.IGetOperation;
 import com.project.frontend.purchasesSystem.models.Purchase;
@@ -30,7 +28,7 @@ public class GetOperation implements IGetOperation{
     }
 
     @Override
-    public List<Purchase> findByFilters(String nameClient, LocalDate date, LocalTime hour) throws IOException {
+    public List<Purchase> findByFilters(String nameClient, String date, String hour) throws IOException {
         Call<List<Purchase>> call = servicePurchases.operation("GET_BY_FILTERS", nameClient, date, hour);
         Response<List<Purchase>> response = call.execute();
         

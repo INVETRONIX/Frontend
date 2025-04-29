@@ -7,6 +7,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface ISaveDevolution {
-    @POST("/api/devolutions")
+    @POST("/api/devolution")
     Call<Devolution> saveDevolution(@Body Devolution devolution);
 }

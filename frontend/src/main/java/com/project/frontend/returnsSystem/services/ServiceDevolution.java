@@ -61,8 +61,8 @@ public class ServiceDevolution {
             case "GET_BY_FILTERS":
                 return (Call<T>) findDevolutionsByFilters.findByFilters(
                     (String) params[0], 
-                    (LocalDate) params[1], 
-                    (LocalTime) params[2]
+                    (String) params[1], 
+                    (String) params[2]
                 );
                 
             default:

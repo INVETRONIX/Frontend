@@ -1,8 +1,6 @@
 package com.project.frontend.returnsSystem.controllers.components;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import com.project.frontend.returnsSystem.controllers.in.IGetOperation;
 import com.project.frontend.returnsSystem.models.Devolution;
@@ -30,7 +28,7 @@ public class GetOPeration implements IGetOperation{
     }
 
     @Override
-    public List<Devolution> findByFilters(String nameClient, LocalDate date, LocalTime hour) throws IOException {
+    public List<Devolution> findByFilters(String nameClient, String date, String hour) throws IOException {
        Call<List<Devolution>> call = serviceDevolution.operation("GET_BY_FILTERS", nameClient, date, hour);
         Response<List<Devolution>> response = call.execute();
         

@@ -1,4 +1,5 @@
 package com.project.frontend.purchasesSystem.models;
+import java.io.Serializable;
 import java.util.List;
 
 import com.project.frontend.productsSystem.models.Product;

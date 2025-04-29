@@ -281,7 +281,7 @@ public class AdminDevoluciones extends javax.swing.JFrame {
 
     private void btnBuscarIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarIdActionPerformed
         try{
-            if (!(txtFechaBusqueda.getText().isBlank() && txtFechaBusqueda.getText().isEmpty())) {
+            if (!(txtFechaBusqueda.getText().isBlank() && !txtFechaBusqueda.getText().isEmpty())) {
                 Object[] container = new Object[3];
                 container[0]=txtFechaBusqueda.getText();
                 container[1]=txtHoraBusqueda.getText();

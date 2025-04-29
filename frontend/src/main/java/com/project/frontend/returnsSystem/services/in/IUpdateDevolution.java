@@ -9,6 +9,6 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface IUpdateDevolution {
-    @PUT("/api/devolutions/{id}")
+    @PUT("/api/devolution/{id}")
     Call<Devolution> updateDevolution(@Path("id") String id, @Body Devolution devolution);
 }
