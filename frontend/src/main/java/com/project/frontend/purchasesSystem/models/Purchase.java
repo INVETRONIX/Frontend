@@ -1,29 +1,45 @@
 package com.project.frontend.purchasesSystem.models;
-
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
+
 import com.project.frontend.productsSystem.models.Product;
 import com.project.frontend.registerUsers.models.Client;
 
 public class Purchase implements Serializable{
     private static final long serialVersionUID = 1L;
+    private String id;
     private Client client;
-    private LocalTime hour;
-    private LocalDate date;
+    private String hour;
+    private String date;
     private List<Product> products;
     private double total;
 
     public Purchase() {
     }
 
-    public Purchase(Client client, LocalTime hour, LocalDate date, List<Product> products, double total) {
+    public Purchase(String id ,Client client, String hour, String date, List<Product> products, double total) {
+        this.id = id;
         this.client = client;
         this.hour = hour;
         this.date = date;
         this.products = products;
         this.total = total;
+    }
+
+    public Purchase(Client client, String hour, String date, List<Product> products, double total) {
+        this.client = client;
+        this.hour = hour;
+        this.date = date;
+        this.products = products;
+        this.total = total;
+    }
+
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Client getClient() {
@@ -34,19 +50,19 @@ public class Purchase implements Serializable{
         this.client = client;
     }
 
-    public LocalTime getHour() {
+    public String getHour() {
         return hour;
     }
 
-    public void setHour(LocalTime hour) {
+    public void setHour(String hour) {
         this.hour = hour;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
