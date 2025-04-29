@@ -1,11 +1,11 @@
 package com.project.frontend.purchasesSystem.models;
-
 import java.util.List;
 
 import com.project.frontend.productsSystem.models.Product;
 import com.project.frontend.registerUsers.models.Client;
 
-public class Purchase {
+public class Purchase implements Serializable{
+    private static final long serialVersionUID = 1L;
     private String id;
     private Client client;
     private String hour;

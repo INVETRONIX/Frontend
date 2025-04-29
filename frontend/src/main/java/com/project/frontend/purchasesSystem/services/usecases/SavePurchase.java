@@ -1,9 +1,8 @@
 package com.project.frontend.purchasesSystem.services.usecases;
 
-import com.project.frontend.productsSystem.services.in.ISaveProduct;
+
 import com.project.frontend.purchasesSystem.models.Purchase;
 import com.project.frontend.purchasesSystem.services.in.ISavePurchase;
-
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -22,8 +21,8 @@ public class SavePurchase implements ISavePurchase{
     }
 
     @Override
-    public Call<Purchase> savePurchase(Purchase puchase) {
-        return service.savePurchase(puchase);
+    public Call<Purchase> savePurchase(Purchase purchase) {
+        return service.savePurchase(purchase);
     }
     
 }
