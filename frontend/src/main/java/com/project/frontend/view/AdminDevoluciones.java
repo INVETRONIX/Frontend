@@ -4,12 +4,19 @@
  */
 package com.project.frontend.view;
 
+import com.project.frontend.returnsSystem.controllers.ControllerDevolution;
+import com.project.frontend.returnsSystem.models.Devolution;
+import java.io.IOException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author sebastian
  */
 public class AdminDevoluciones extends javax.swing.JFrame {
-
+    private ControllerDevolution controllerDevolution;
     /**
      * Creates new form ListaDeDevolucionesAdministrador
      */
@@ -18,6 +25,15 @@ public class AdminDevoluciones extends javax.swing.JFrame {
         setLocationRelativeTo(this);
         setResizable(false);
         pack();
+        this.controllerDevolution = new ControllerDevolution();
+        try {
+            llenarTabla();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, 
+              "Error inesperado: " + ex.getMessage(), 
+              "Error", 
+              JOptionPane.ERROR_MESSAGE);
+      }
     }
 
     /**
@@ -29,14 +45,22 @@ public class AdminDevoluciones extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        txtIdBusqueda1 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        tableDevolution = new javax.swing.JTable();
+        btnAceptar = new javax.swing.JButton();
+        btnRechazar = new javax.swing.JButton();
+        txtIdDevolucion = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        txtIdBusqueda = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        btnBuscarId = new javax.swing.JButton();
+        txtFechaBusqueda = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtHoraBusqueda = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -50,24 +74,47 @@ public class AdminDevoluciones extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableDevolution.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Client", "Date", "Hour", "Product", "Total"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tableDevolution);
 
-        jButton1.setText("Aceptar");
+        btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Rechazar");
+        btnRechazar.setText("Rechazar");
+        btnRechazar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRechazarActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("ID DEVOLUCION");
+
+        jLabel7.setText("Buscar por Id");
+
+        btnBuscarId.setText("Buscar");
+        btnBuscarId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarIdActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Buscar por fecha");
+
+        jLabel9.setText("Buscar por hora");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -79,20 +126,39 @@ public class AdminDevoluciones extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 181, Short.MAX_VALUE)
                         .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnAceptar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTextField1)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(txtIdDevolucion)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2)))))
+                                .addComponent(btnRechazar))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnBuscarId, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(58, 58, 58)))
                 .addGap(46, 46, 46))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtIdBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)
+                            .addComponent(txtHoraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,10 +173,24 @@ public class AdminDevoluciones extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addGap(1, 1, 1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(38, Short.MAX_VALUE))
+                    .addComponent(btnAceptar)
+                    .addComponent(btnRechazar)
+                    .addComponent(txtIdDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtIdBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscarId, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtHoraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62))
         );
 
         pack();
@@ -122,14 +202,139 @@ public class AdminDevoluciones extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+ 
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+     private void limpiarCampos(){
+        txtIdDevolucion.setText("");
+    }
+     
+    private void llenarTabla(List<Devolution> lista) throws IOException {
+        
+        if(lista != null && !lista.isEmpty()){
+            DefaultTableModel model = new DefaultTableModel();
+            model.setColumnIdentifiers(new Object[]{"ID","Fecha de devolucion","Cliente","Fecha de compra","Hora","Producto","Total"});
+            for (int i = 0; i < lista.size(); i++) {
+                model.addRow(new Object[]{
+                   lista.get(i).getId(),
+                   lista.get(i).getDate(),
+                   lista.get(i).getPurchase().getClient().getId(),
+                   lista.get(i).getPurchase().getDate(),
+                   lista.get(i).getPurchase().getHour(),
+                   lista.get(i).getPurchase().getProducts().get(i).getName(),
+                   lista.get(i).getPurchase().getTotal()
+                });
+            }
+
+            tableDevolution.setModel(model);
+        }
+
+    }
+    
+     private void llenarTabla() throws IOException {
+       List<Devolution> lista = (List<Devolution>) controllerDevolution.operation("GET_ALL", null);
+       if(lista != null && !lista.isEmpty()){
+            DefaultTableModel model = new DefaultTableModel();
+            model.setColumnIdentifiers(new Object[]{"ID","Fecha de devolucion","Cliente","Fecha de compra","Hora","Producto","Total"});
+            for (int i = 0; i < lista.size(); i++) {
+                model.addRow(new Object[]{ 
+                   lista.get(i).getId(),
+                   lista.get(i).getDate(),
+                   lista.get(i).getPurchase().getClient().getId(),
+                   lista.get(i).getPurchase().getDate(),
+                   lista.get(i).getPurchase().getHour(),
+                   lista.get(i).getPurchase().getId(),
+                   lista.get(i).getPurchase().getTotal()
+                });
+            }
+            tableDevolution.setModel(model);
+        }
+    }
+     
+    private void btnRechazarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRechazarActionPerformed
+        try{
+            if(txtIdDevolucion.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this, 
+               "Debes de ingresar el ID de la devolucion que será eliminada", 
+               "Error", 
+               JOptionPane.ERROR_MESSAGE);
+               return;
+            }
+            
+            String id = txtIdDevolucion.getText();
+            
+            Object[] countain = new Object[1];
+            countain[0] = id;
+            
+            controllerDevolution.operation("DELETE", countain);
+            
+            limpiarCampos();
+            llenarTabla();
+        } catch(Exception e){
+            JOptionPane.showConfirmDialog(this,
+                    "Error inesperado:" + e.getMessage(),
+                    "error", 
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnRechazarActionPerformed
+
+    private void btnBuscarIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarIdActionPerformed
+        try{
+            if (!(txtFechaBusqueda.getText().isBlank() && txtFechaBusqueda.getText().isEmpty())) {
+                Object[] container = new Object[3];
+                container[0]=txtFechaBusqueda.getText();
+                container[1]=txtHoraBusqueda.getText();
+                List<Devolution> devolutions= (List<Devolution>) controllerDevolution.operation("GET_BY_FILTERS", container);
+                
+                if(devolutions!=null && !devolutions.isEmpty()){
+                    llenarTabla(devolutions);
+                }
+            }else{
+                String id = txtIdBusqueda.getText();
+        
+                Object[] countain = new Object[1];
+                countain[0] = id;
+        
+                Devolution devolution = (Devolution) controllerDevolution.operation("GET_BY_ID", countain);
+        
+                if(devolution != null){
+                    JOptionPane.showMessageDialog(
+                        null,
+                            "📦 Devolucion encontrado:\n\n" +
+                            "📝 Id Cliente:  " + devolution.getPurchase().getClient().getId() + "\n" +
+                            "📄 Fecha de devolucion : " + devolution.getDate() + "\n" +
+                            "🚚 Productos:  " + devolution.getPurchase().getProducts() + "\n" +
+                            "💰 Total: " + devolution.getPurchase().getTotal(),
+                            "✅ Busquedad Exitosa",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+                }
+            }
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(this, 
+                "Error inesperado: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuscarIdActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnBuscarId;
+    private javax.swing.JButton btnRechazar;
     private javax.swing.JButton btnVolver;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tableDevolution;
+    private javax.swing.JTextField txtFechaBusqueda;
+    private javax.swing.JTextField txtHoraBusqueda;
+    private javax.swing.JTextField txtIdBusqueda;
+    private javax.swing.JTextField txtIdBusqueda1;
+    private javax.swing.JTextField txtIdDevolucion;
     // End of variables declaration//GEN-END:variables
 }
