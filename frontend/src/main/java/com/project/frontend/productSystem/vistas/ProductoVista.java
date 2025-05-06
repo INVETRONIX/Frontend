@@ -1,5 +1,6 @@
 package com.project.frontend.productSystem.vistas;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.project.frontend.productSystem.models.Producto;
 import com.project.frontend.productSystem.services.IProductoService;
 import com.project.frontend.productSystem.services.RetrofitClient;
@@ -7,9 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.table.*;
-import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import retrofit2.Response;
 
@@ -20,16 +19,8 @@ public class ProductoVista extends JFrame {
     private JTextField txtBuscar;
     private JComboBox<String> cmbFiltro;
     private JButton btnNuevo, btnEditar, btnEliminar, btnBuscar;
-    private JPanel panelFiltros, panelBotones, panelTabla;
-
-    // Colores del tema oscuro
-    private final Color COLOR_FONDO = new Color(33, 33, 33);
-    private final Color COLOR_PRIMARIO = new Color(0, 150, 136);
-    private final Color COLOR_SECUNDARIO = new Color(76, 175, 80);
-    private final Color COLOR_PELIGRO = new Color(244, 67, 54);
-    private final Color COLOR_TEXTO = new Color(255, 255, 255);
-    private final Color COLOR_TEXTO_SECUNDARIO = new Color(189, 189, 189);
-    private final Color COLOR_BORDE = new Color(66, 66, 66);
+    private JPanel panelSidebar, panelHeader, panelResumen, panelTabla, panelBotones, panelFiltros;
+    private JLabel lblTotalProductos;
 
     public ProductoVista() {
         productoService = RetrofitClient.getClient().create(IProductoService.class);
@@ -38,30 +29,81 @@ public class ProductoVista extends JFrame {
     }
 
     private void initComponents() {
-        setTitle("Sistema de Gestión de Productos");
-        setSize(1200, 700);
+        setTitle("Dashboard - Gestión de Productos");
+        setSize(1700, 800);
+        setResizable(false);
+        setMinimumSize(new Dimension(1300, 700));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(COLOR_FONDO);
+        setLayout(new BorderLayout());
 
-        // Panel principal
-        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
-        panelPrincipal.setBackground(COLOR_FONDO);
-        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Sidebar
+        panelSidebar = new JPanel();
+        panelSidebar.setBackground(new Color(25, 25, 25));
+        panelSidebar.setPreferredSize(new Dimension(220, 0));
+        panelSidebar.setLayout(new BoxLayout(panelSidebar, BoxLayout.Y_AXIS));
+        panelSidebar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(40, 40, 40)));
 
-        // Panel de filtros
+        JLabel lblLogo = new JLabel("\uD83D\uDCBB Inventronix");
+        lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblLogo.setForeground(new Color(0, 200, 180));
+        lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblLogo.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
+        panelSidebar.add(lblLogo);
+
+        JButton btnProductos = crearBotonSidebar("Productos", "📦");
+        btnProductos.setEnabled(false);
+        panelSidebar.add(btnProductos);
+        panelSidebar.add(Box.createVerticalGlue());
+
+        JLabel lblFooter = new JLabel("v1.0 - Demo");
+        lblFooter.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblFooter.setForeground(new Color(120, 120, 120));
+        lblFooter.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblFooter.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        panelSidebar.add(lblFooter);
+
+        add(panelSidebar, BorderLayout.WEST);
+
+        // Header
+        panelHeader = new JPanel(new BorderLayout());
+        panelHeader.setBackground(new Color(30, 30, 30));
+        panelHeader.setBorder(BorderFactory.createEmptyBorder(18, 30, 18, 30));
+        JLabel lblTitulo = new JLabel("Gestión de Productos");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitulo.setForeground(Color.WHITE);
+        panelHeader.add(lblTitulo, BorderLayout.WEST);
+        JLabel lblUser = new JLabel("👤 Admin");
+        lblUser.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        lblUser.setForeground(new Color(180, 180, 180));
+        panelHeader.add(lblUser, BorderLayout.EAST);
+        add(panelHeader, BorderLayout.NORTH);
+
+        // Panel central (resumen + tabla)
+        JPanel panelCentral = new JPanel();
+        panelCentral.setLayout(new BorderLayout(0, 20));
+        panelCentral.setBackground(new Color(33, 33, 33));
+        panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Tarjetas resumen
+        panelResumen = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
+        panelResumen.setOpaque(false);
+        lblTotalProductos = crearTarjetaResumen("Total Productos", "0", new Color(0, 200, 180));
+        panelResumen.add(lblTotalProductos);
+        panelCentral.add(panelResumen, BorderLayout.NORTH);
+
+        // Filtros y botones
+        JPanel panelTop = new JPanel(new BorderLayout());
+        panelTop.setOpaque(false);
         panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        panelFiltros.setBackground(COLOR_FONDO);
-        
+        panelFiltros.setOpaque(false);
         JLabel lblBuscar = new JLabel("Buscar por:");
-        lblBuscar.setForeground(COLOR_TEXTO);
-        lblBuscar.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        
+        lblBuscar.setForeground(new Color(200, 200, 200));
+        lblBuscar.setFont(new Font("Segoe UI", Font.BOLD, 15));
         cmbFiltro = new JComboBox<>(new String[]{"Nombre", "Categoría", "Proveedor"});
-        cmbFiltro.setBackground(COLOR_FONDO);
-        cmbFiltro.setForeground(COLOR_TEXTO);
-        cmbFiltro.setPreferredSize(new Dimension(180, 35));
+        cmbFiltro.setBackground(new Color(40, 40, 40));
+        cmbFiltro.setForeground(Color.WHITE);
+        cmbFiltro.setPreferredSize(new Dimension(160, 36));
         cmbFiltro.setFont(new Font("Segoe UI", Font.BOLD, 15));
         cmbFiltro.setFocusable(false);
         cmbFiltro.setUI(new javax.swing.plaf.basic.BasicComboBoxUI());
@@ -69,45 +111,41 @@ public class ProductoVista extends JFrame {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                label.setBackground(isSelected ? COLOR_PRIMARIO : COLOR_FONDO);
-                label.setForeground(COLOR_TEXTO);
+                label.setBackground(isSelected ? new Color(0, 200, 180) : new Color(40, 40, 40));
+                label.setForeground(Color.WHITE);
                 label.setFont(new Font("Segoe UI", Font.BOLD, 15));
                 label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
                 return label;
             }
         });
-        cmbFiltro.setBorder(BorderFactory.createLineBorder(COLOR_BORDE, 2, true));
-        
+        cmbFiltro.setBorder(BorderFactory.createLineBorder(new Color(66, 66, 66), 2, true));
         txtBuscar = new JTextField(20);
-        txtBuscar.setBackground(COLOR_FONDO);
-        txtBuscar.setForeground(COLOR_TEXTO);
-        txtBuscar.setCaretColor(COLOR_TEXTO);
+        txtBuscar.setBackground(new Color(40, 40, 40));
+        txtBuscar.setForeground(Color.WHITE);
+        txtBuscar.setCaretColor(Color.WHITE);
         txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         txtBuscar.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(COLOR_BORDE, 2, true),
+            BorderFactory.createLineBorder(new Color(66, 66, 66), 2, true),
             BorderFactory.createEmptyBorder(6, 10, 6, 10)
         ));
         txtBuscar.setPreferredSize(new Dimension(250, 38));
-        
-        btnBuscar = crearBoton("Buscar", COLOR_PRIMARIO);
-        btnBuscar.setPreferredSize(new Dimension(120, 35));
-        
+        btnBuscar = crearBotonAccion("Buscar", "\uD83D\uDD0D", new Color(0, 200, 180));
         panelFiltros.add(lblBuscar);
         panelFiltros.add(cmbFiltro);
         panelFiltros.add(txtBuscar);
         panelFiltros.add(btnBuscar);
+        panelTop.add(panelFiltros, BorderLayout.WEST);
 
-        // Panel de botones
-        panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        panelBotones.setBackground(COLOR_FONDO);
-        
-        btnNuevo = crearBoton("Nuevo Producto", COLOR_SECUNDARIO);
-        btnEditar = crearBoton("Editar Producto", COLOR_PRIMARIO);
-        btnEliminar = crearBoton("Eliminar Producto", COLOR_PELIGRO);
-        
+        panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        panelBotones.setOpaque(false);
+        btnNuevo = crearBotonAccion("Nuevo", "\u2795", new Color(76, 175, 80));
+        btnEditar = crearBotonAccion("Editar", "\u270E", new Color(0, 150, 136));
+        btnEliminar = crearBotonAccion("Eliminar", "\uD83D\uDDD1", new Color(244, 67, 54));
         panelBotones.add(btnNuevo);
         panelBotones.add(btnEditar);
         panelBotones.add(btnEliminar);
+        panelTop.add(panelBotones, BorderLayout.EAST);
+        panelCentral.add(panelTop, BorderLayout.CENTER);
 
         // Tabla de productos
         modeloTabla = new DefaultTableModel() {
@@ -129,73 +167,91 @@ public class ProductoVista extends JFrame {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
-                    c.setBackground(COLOR_PRIMARIO);
-                    c.setForeground(COLOR_TEXTO);
+                    c.setBackground(new Color(0, 200, 180));
+                    c.setForeground(Color.BLACK);
                 } else {
                     c.setBackground(row % 2 == 0 ? new Color(45, 45, 45) : new Color(40, 40, 40));
-                    c.setForeground(COLOR_TEXTO);
+                    c.setForeground(Color.WHITE);
                 }
                 return c;
             }
         };
-        
         tablaProductos.setRowHeight(40);
         tablaProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tablaProductos.setShowGrid(false);
         tablaProductos.setIntercellSpacing(new Dimension(0, 0));
-        tablaProductos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        
-        // Personalizar encabezados de la tabla
+        tablaProductos.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         JTableHeader header = tablaProductos.getTableHeader();
-        header.setBackground(COLOR_PRIMARIO);
-        header.setForeground(COLOR_TEXTO);
-        header.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        
+        header.setBackground(new Color(0, 200, 180));
+        header.setForeground(Color.BLACK);
+        header.setFont(new Font("Segoe UI", Font.BOLD, 16));
         JScrollPane scrollPane = new JScrollPane(tablaProductos);
-        scrollPane.setBorder(new RoundBorder(15, COLOR_BORDE));
-        scrollPane.getViewport().setBackground(COLOR_FONDO);
-
-        // Panel para la tabla
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        scrollPane.getViewport().setBackground(new Color(33, 33, 33));
         panelTabla = new JPanel(new BorderLayout());
-        panelTabla.setBackground(COLOR_FONDO);
+        panelTabla.setOpaque(false);
         panelTabla.add(scrollPane, BorderLayout.CENTER);
+        panelCentral.add(panelTabla, BorderLayout.SOUTH);
 
-        // Agregar componentes al panel principal
-        panelPrincipal.add(panelFiltros, BorderLayout.NORTH);
-        panelPrincipal.add(panelBotones, BorderLayout.CENTER);
-        panelPrincipal.add(panelTabla, BorderLayout.SOUTH);
+        add(panelCentral, BorderLayout.CENTER);
 
-        // Agregar panel principal al frame
-        add(panelPrincipal);
-
-        // Configurar acciones
         configurarAcciones();
     }
 
-    private JButton crearBoton(String texto, Color color) {
-        JButton boton = new JButton(texto);
-        boton.setPreferredSize(new Dimension(150, 40));
-        boton.setBackground(color);
-        boton.setForeground(COLOR_TEXTO);
-        boton.setBorder(new RoundBorder(15, color));
+    private JButton crearBotonSidebar(String texto, String icono) {
+        JButton boton = new JButton(icono + "  " + texto);
+        boton.setMaximumSize(new Dimension(200, 50));
+        boton.setBackground(new Color(30, 30, 30));
+        boton.setForeground(new Color(0, 200, 180));
+        boton.setFont(new Font("Segoe UI", Font.BOLD, 18));
         boton.setFocusPainted(false);
-        boton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        // Efecto hover
+        return boton;
+    }
+
+    private JButton crearBotonAccion(String texto, String icono, Color color) {
+        JButton boton = new JButton(icono + "  " + texto);
+        boton.setPreferredSize(new Dimension(160, 40));
+        boton.setBackground(color);
+        boton.setForeground(Color.BLACK);
+        boton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        boton.setFocusPainted(false);
+        boton.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.setToolTipText(texto);
         boton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 boton.setBackground(color.brighter());
             }
-            
             @Override
             public void mouseExited(MouseEvent e) {
                 boton.setBackground(color);
             }
         });
-        
         return boton;
+    }
+
+    private JLabel crearTarjetaResumen(String titulo, String valor, Color color) {
+        JPanel tarjeta = new JPanel();
+        tarjeta.setPreferredSize(new Dimension(220, 90));
+        tarjeta.setBackground(new Color(40, 40, 40));
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(color, 3, true),
+            BorderFactory.createEmptyBorder(10, 20, 10, 20)
+        ));
+        tarjeta.setLayout(new BorderLayout());
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblTitulo.setForeground(color);
+        JLabel lblValor = new JLabel(valor);
+        lblValor.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        lblValor.setForeground(Color.WHITE);
+        tarjeta.add(lblTitulo, BorderLayout.NORTH);
+        tarjeta.add(lblValor, BorderLayout.CENTER);
+        panelResumen.add(tarjeta);
+        return lblValor;
     }
 
     private void configurarAcciones() {
@@ -203,7 +259,6 @@ public class ProductoVista extends JFrame {
             ProductoFormularioVista formulario = new ProductoFormularioVista(this, null);
             formulario.setVisible(true);
         });
-
         btnEditar.addActionListener(e -> {
             int filaSeleccionada = tablaProductos.getSelectedRow();
             if (filaSeleccionada == -1) {
@@ -214,14 +269,12 @@ public class ProductoVista extends JFrame {
             ProductoFormularioVista formulario = new ProductoFormularioVista(this, id);
             formulario.setVisible(true);
         });
-
         btnEliminar.addActionListener(e -> {
             int filaSeleccionada = tablaProductos.getSelectedRow();
             if (filaSeleccionada == -1) {
                 mostrarError("Por favor, seleccione un producto para eliminar");
                 return;
             }
-
             int confirmacion = JOptionPane.showConfirmDialog(
                 this,
                 "¿Está seguro de que desea eliminar este producto?",
@@ -229,7 +282,6 @@ public class ProductoVista extends JFrame {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE
             );
-
             if (confirmacion == JOptionPane.YES_OPTION) {
                 try {
                     Long id = (Long) modeloTabla.getValueAt(filaSeleccionada, 0);
@@ -247,19 +299,16 @@ public class ProductoVista extends JFrame {
                 }
             }
         });
-
         btnBuscar.addActionListener(e -> {
             String filtro = txtBuscar.getText().trim();
             if (filtro.isEmpty()) {
                 cargarProductos();
                 return;
             }
-
             try {
                 List<Producto> productos;
                 String tipoFiltro = (String) cmbFiltro.getSelectedItem();
                 Response<List<Producto>> response;
-                
                 switch (tipoFiltro) {
                     case "Nombre":
                         response = productoService.obtenerProductosPorNombre(filtro).execute();
@@ -273,7 +322,6 @@ public class ProductoVista extends JFrame {
                     default:
                         response = productoService.obtenerTodosLosProductos().execute();
                 }
-                
                 if (response.isSuccessful()) {
                     actualizarTabla(response.body());
                 } else {
@@ -304,6 +352,7 @@ public class ProductoVista extends JFrame {
 
     private void actualizarTabla(List<Producto> productos) {
         modeloTabla.setRowCount(0);
+        int total = 0;
         if (productos != null) {
             for (Producto producto : productos) {
                 modeloTabla.addRow(new Object[]{
@@ -315,8 +364,10 @@ public class ProductoVista extends JFrame {
                     producto.getStock(),
                     producto.getProveedor()
                 });
+                total++;
             }
         }
+        lblTotalProductos.setText(String.valueOf(total));
     }
 
     private void cargarProductos() {
@@ -341,42 +392,12 @@ public class ProductoVista extends JFrame {
         );
     }
 
-    // Clase para bordes redondeados
-    private static class RoundBorder implements Border {
-        private int radius;
-        private Color color;
-
-        RoundBorder(int radius, Color color) {
-            this.radius = radius;
-            this.color = color;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(color);
-            g2.draw(new RoundRectangle2D.Float(x, y, width - 1, height - 1, radius, radius));
-        }
-
-        @Override
-        public Insets getBorderInsets(Component c) {
-            return new Insets(radius, radius, radius, radius);
-        }
-
-        @Override
-        public boolean isBorderOpaque() {
-            return true;
-        }
-    }
-
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
         SwingUtilities.invokeLater(() -> {
             ProductoVista vista = new ProductoVista();
             vista.setVisible(true);
