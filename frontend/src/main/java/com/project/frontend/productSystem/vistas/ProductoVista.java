@@ -61,16 +61,33 @@ public class ProductoVista extends JFrame {
         cmbFiltro = new JComboBox<>(new String[]{"Nombre", "Categoría", "Proveedor"});
         cmbFiltro.setBackground(COLOR_FONDO);
         cmbFiltro.setForeground(COLOR_TEXTO);
-        cmbFiltro.setBorder(new RoundBorder(15, COLOR_BORDE));
-        cmbFiltro.setPreferredSize(new Dimension(150, 35));
+        cmbFiltro.setPreferredSize(new Dimension(180, 35));
+        cmbFiltro.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        cmbFiltro.setFocusable(false);
+        cmbFiltro.setUI(new javax.swing.plaf.basic.BasicComboBoxUI());
+        cmbFiltro.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                label.setBackground(isSelected ? COLOR_PRIMARIO : COLOR_FONDO);
+                label.setForeground(COLOR_TEXTO);
+                label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+                label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                return label;
+            }
+        });
+        cmbFiltro.setBorder(BorderFactory.createLineBorder(COLOR_BORDE, 2, true));
         
         txtBuscar = new JTextField(20);
         txtBuscar.setBackground(COLOR_FONDO);
         txtBuscar.setForeground(COLOR_TEXTO);
         txtBuscar.setCaretColor(COLOR_TEXTO);
-        txtBuscar.setBorder(new RoundBorder(15, COLOR_BORDE));
-        txtBuscar.setPreferredSize(new Dimension(250, 35));
-        txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        txtBuscar.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(COLOR_BORDE, 2, true),
+            BorderFactory.createEmptyBorder(6, 10, 6, 10)
+        ));
+        txtBuscar.setPreferredSize(new Dimension(250, 38));
         
         btnBuscar = crearBoton("Buscar", COLOR_PRIMARIO);
         btnBuscar.setPreferredSize(new Dimension(120, 35));

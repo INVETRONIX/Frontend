@@ -89,10 +89,19 @@ public class ProductoFormularioVista extends JDialog {
         lblDescripcion.setForeground(labelColor);
         panelFormulario.add(lblDescripcion, gbc);
         gbc.gridx = 1;
-        txtDescripcion = new JTextArea(3, 20);
+        txtDescripcion = new JTextArea(5, 20);
         txtDescripcion.setLineWrap(true);
-        txtDescripcion.setBorder(new RoundBorder(10));
-        panelFormulario.add(new JScrollPane(txtDescripcion), gbc);
+        txtDescripcion.setWrapStyleWord(true);
+        txtDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        txtDescripcion.setBackground(new Color(40, 40, 40));
+        txtDescripcion.setForeground(Color.WHITE);
+        txtDescripcion.setCaretColor(Color.WHITE);
+        txtDescripcion.setBorder(BorderFactory.createEmptyBorder(2, 6, 2, 6));
+        JScrollPane scrollDescripcion = new JScrollPane(txtDescripcion);
+        scrollDescripcion.setBorder(new RoundBorder(10, new Color(66, 66, 66)));
+        scrollDescripcion.getViewport().setBackground(new Color(40, 40, 40));
+        scrollDescripcion.setPreferredSize(new Dimension(0, 90));
+        panelFormulario.add(scrollDescripcion, gbc);
 
         // Precio
         gbc.gridx = 0;
@@ -227,16 +236,22 @@ public class ProductoFormularioVista extends JDialog {
     // Clase para bordes redondeados
     private static class RoundBorder implements Border {
         private int radius;
+        private Color color;
 
         RoundBorder(int radius) {
             this.radius = radius;
+        }
+
+        RoundBorder(int radius, Color color) {
+            this.radius = radius;
+            this.color = color;
         }
 
         @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(c.getBackground());
+            g2.setColor(color);
             g2.draw(new RoundRectangle2D.Float(x, y, width - 1, height - 1, radius, radius));
         }
 
