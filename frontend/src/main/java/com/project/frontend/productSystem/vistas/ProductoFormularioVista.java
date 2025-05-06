@@ -4,7 +4,6 @@ import com.project.frontend.productSystem.models.Producto;
 import com.project.frontend.productSystem.services.IProductoService;
 import com.project.frontend.productSystem.services.RetrofitClient;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.geom.RoundRectangle2D;

@@ -6,11 +6,15 @@ import com.project.frontend.comprasSystem.models.ItemCarrito;
 import com.project.frontend.comprasSystem.models.Producto;
 import com.project.frontend.comprasSystem.services.CarritoService;
 import com.project.frontend.comprasSystem.services.ProductoService;
+import com.project.frontend.comprasSystem.services.ImageService;
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
+import java.net.URL;
+import java.awt.image.BufferedImage;
 
 public class ClienteVista extends JFrame {
     private JTable tablaProductos;
@@ -24,6 +28,9 @@ public class ClienteVista extends JFrame {
     private Carrito carrito;
     private ProductoService productoService;
     private List<Producto> productosOriginales;
+    private JPanel panelAlbum;
+    private JScrollPane scrollPaneAlbum;
+    private ImageService imageService;
 
     public ClienteVista() {
         try {
@@ -32,6 +39,7 @@ public class ClienteVista extends JFrame {
             this.carrito = new Carrito();
         }
         this.productoService = new ProductoService();
+        imageService = new ImageService();
         initComponents();
         cargarProductos();
     }
@@ -116,83 +124,14 @@ public class ClienteVista extends JFrame {
 
         add(panelHeader, BorderLayout.NORTH);
 
-        // Tabla de productos
-        modeloTabla = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 5; // Solo el botón de añadir es editable
-            }
-        };
-        modeloTabla.addColumn("ID");
-        modeloTabla.addColumn("Nombre");
-        modeloTabla.addColumn("Descripción");
-        modeloTabla.addColumn("Categoría");
-        modeloTabla.addColumn("Precio");
-        modeloTabla.addColumn(""); // Columna para el botón añadir
-
-        tablaProductos = new JTable(modeloTabla) {
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component c = super.prepareRenderer(renderer, row, column);
-                if (isRowSelected(row)) {
-                    c.setBackground(new Color(0, 200, 180));
-                    c.setForeground(Color.BLACK);
-                } else {
-                    c.setBackground(row % 2 == 0 ? new Color(45, 45, 45) : new Color(40, 40, 40));
-                    c.setForeground(Color.WHITE);
-                }
-                return c;
-            }
-        };
-        tablaProductos.setRowHeight(40);
-        tablaProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tablaProductos.setShowGrid(false);
-        tablaProductos.setIntercellSpacing(new Dimension(0, 0));
-        tablaProductos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        
-        JTableHeader header = tablaProductos.getTableHeader();
-        header.setBackground(new Color(0, 200, 180));
-        header.setForeground(Color.BLACK);
-        header.setFont(new Font("Segoe UI", Font.BOLD, 14));
-
-        JScrollPane scrollPane = new JScrollPane(tablaProductos);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 30, 30, 30));
-        scrollPane.getViewport().setBackground(new Color(33, 33, 33));
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Render y editor para el botón "Añadir"
-        tablaProductos.getColumnModel().getColumn(5).setCellRenderer((table, value, isSelected, hasFocus, row, col) -> {
-            JButton btn = new JButton("➕");
-            btn.setBackground(new Color(76, 175, 80));
-            btn.setForeground(Color.WHITE);
-            btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            btn.setFocusPainted(false);
-            btn.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
-            btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            return btn;
-        });
-
-        tablaProductos.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
-            private JButton btn = new JButton("➕");
-            private int row;
-            {
-                btn.setBackground(new Color(76, 175, 80));
-                btn.setForeground(Color.WHITE);
-                btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-                btn.setFocusPainted(false);
-                btn.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
-                btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                btn.addActionListener(e -> {
-                    añadirAlCarrito(row);
-                    fireEditingStopped();
-                });
-            }
-            @Override
-            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-                this.row = row;
-                return btn;
-            }
-        });
+        // Panel tipo álbum
+        panelAlbum = new JPanel();
+        panelAlbum.setLayout(new WrapLayout(FlowLayout.LEFT, 20, 20));
+        panelAlbum.setBackground(new Color(33, 33, 33));
+        scrollPaneAlbum = new JScrollPane(panelAlbum);
+        scrollPaneAlbum.setBorder(BorderFactory.createEmptyBorder(10, 30, 30, 30));
+        scrollPaneAlbum.getViewport().setBackground(new Color(33, 33, 33));
+        add(scrollPaneAlbum, BorderLayout.CENTER);
 
         // Acciones
         btnVerCarrito.addActionListener(e -> abrirCarrito());
@@ -209,19 +148,9 @@ public class ClienteVista extends JFrame {
         try {
             List<Producto> productos = productoService.getAllProductos();
             productosOriginales = productos;
-            modeloTabla.setRowCount(0);
-            for (Producto producto : productos) {
-                modeloTabla.addRow(new Object[]{
-                    producto.getId(),
-                    producto.getNombre(),
-                    producto.getDescripcion(),
-                    producto.getCategoria(),
-                    String.format("$%.2f", producto.getPrecio()),
-                    ""
-                });
-            }
+            mostrarProductosEnAlbum(productos);
             if (productos.isEmpty()) {
-                mostrarMensajeSinResultados();
+                mostrarMensajeSinResultadosAlbum();
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, 
@@ -235,7 +164,7 @@ public class ClienteVista extends JFrame {
         String busqueda = txtBuscar.getText().toLowerCase();
         String filtro = (String) cmbFiltro.getSelectedItem();
         boolean hayResultados = false;
-        modeloTabla.setRowCount(0);
+        List<Producto> filtrados = new java.util.ArrayList<>();
         for (Producto producto : productosOriginales) {
             String valor = "";
             switch (filtro) {
@@ -252,55 +181,106 @@ public class ClienteVista extends JFrame {
                     valor = producto.getNombre().toLowerCase() + " " + producto.getCategoria().toLowerCase();
             }
             if (valor.contains(busqueda)) {
-                modeloTabla.addRow(new Object[]{
-                    producto.getId(),
-                    producto.getNombre(),
-                    producto.getDescripcion(),
-                    producto.getCategoria(),
-                    String.format("$%.2f", producto.getPrecio()),
-                    ""
-                });
+                filtrados.add(producto);
                 hayResultados = true;
             }
         }
+        mostrarProductosEnAlbum(filtrados);
         if (!hayResultados) {
-            mostrarMensajeSinResultados();
+            mostrarMensajeSinResultadosAlbum();
         }
     }
 
-    private void mostrarMensajeSinResultados() {
-        modeloTabla.setRowCount(0);
-        modeloTabla.addRow(new Object[]{"", "No se encontraron productos", "", "", "", ""});
+    private void mostrarProductosEnAlbum(List<Producto> productos) {
+        panelAlbum.removeAll();
+        for (Producto producto : productos) {
+            JPanel card = crearCardProducto(producto);
+            panelAlbum.add(card);
+        }
+        panelAlbum.revalidate();
+        panelAlbum.repaint();
     }
 
-    private void añadirAlCarrito(int row) {
+    private JPanel crearCardProducto(Producto producto) {
+        JPanel card = new JPanel();
+        card.setPreferredSize(new Dimension(220, 320));
+        card.setBackground(new Color(44, 44, 44));
+        card.setLayout(new BorderLayout());
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(0, 200, 180), 2),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+
+        // Imagen
+        JLabel lblImagen = new JLabel();
+        lblImagen.setHorizontalAlignment(JLabel.CENTER);
+        lblImagen.setPreferredSize(new Dimension(200, 160));
+        String urlImg = imageService.getImageUrl(producto.getNombre());
         try {
-            Long idProducto = (Long) modeloTabla.getValueAt(row, 0);
-            String nombre = (String) modeloTabla.getValueAt(row, 1);
-            double precio = Double.parseDouble(((String) modeloTabla.getValueAt(row, 4)).replace("$", "").replace(",", "."));
-
-            Producto producto = new Producto();
-            producto.setId(idProducto);
-            producto.setNombre(nombre);
-            producto.setPrecio(precio);
-
-            ItemCarrito item = new ItemCarrito();
-            item.setProducto(producto);
-            item.setCantidad(1);
-
-            carrito.addItem(item);
-            CarritoService.guardarCarrito(carrito);
-
-            JOptionPane.showMessageDialog(this,
-                "Producto añadido al carrito",
-                "Éxito",
-                JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                "Error al añadir al carrito: " + ex.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+            if (urlImg != null) {
+                java.awt.Image img = ImageIO.read(new URL(urlImg));
+                lblImagen.setIcon(new ImageIcon(img.getScaledInstance(200, 160, java.awt.Image.SCALE_SMOOTH)));
+            } else {
+                lblImagen.setIcon(new ImageIcon(new BufferedImage(200, 160, BufferedImage.TYPE_INT_RGB)));
+            }
+        } catch (Exception e) {
+            lblImagen.setIcon(new ImageIcon(new BufferedImage(200, 160, BufferedImage.TYPE_INT_RGB)));
         }
+        card.add(lblImagen, BorderLayout.NORTH);
+
+        // Info producto
+        JPanel panelInfo = new JPanel();
+        panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+        panelInfo.setBackground(new Color(44, 44, 44));
+        JLabel lblNombre = new JLabel(producto.getNombre());
+        lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblNombre.setForeground(Color.WHITE);
+        JLabel lblPrecio = new JLabel(String.format("$%.2f", producto.getPrecio()));
+        lblPrecio.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblPrecio.setForeground(new Color(0, 200, 180));
+        panelInfo.add(lblNombre);
+        panelInfo.add(Box.createVerticalStrut(8));
+        panelInfo.add(lblPrecio);
+        card.add(panelInfo, BorderLayout.CENTER);
+
+        // Botón añadir
+        JButton btnAdd = new JButton("➕ Añadir al carrito");
+        btnAdd.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnAdd.setBackground(new Color(76, 175, 80));
+        btnAdd.setForeground(Color.WHITE);
+        btnAdd.setFocusPainted(false);
+        btnAdd.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAdd.addActionListener(e -> {
+            try {
+                ItemCarrito item = new ItemCarrito();
+                item.setProducto(producto);
+                item.setCantidad(1);
+                carrito.addItem(item);
+                CarritoService.guardarCarrito(carrito);
+                JOptionPane.showMessageDialog(this,
+                    "Producto añadido al carrito",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Error al añadir al carrito: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        card.add(btnAdd, BorderLayout.SOUTH);
+        return card;
+    }
+
+    private void mostrarMensajeSinResultadosAlbum() {
+        panelAlbum.removeAll();
+        JLabel lbl = new JLabel("No se encontraron productos", JLabel.CENTER);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lbl.setForeground(Color.WHITE);
+        panelAlbum.add(lbl);
+        panelAlbum.revalidate();
+        panelAlbum.repaint();
     }
 
     private void abrirCarrito() {
