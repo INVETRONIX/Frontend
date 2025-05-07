@@ -21,11 +21,13 @@ public class CarritoVista extends JFrame {
     private Carrito carrito;
     private ClienteVista clienteVista;
     private CompraService compraService;
+    private final CarritoService carritoService;
 
     public CarritoVista(ClienteVista clienteVista, Carrito carrito) {
         this.clienteVista = clienteVista;
         this.carrito = carrito;
         this.compraService = new CompraService();
+        this.carritoService = CarritoService.getInstance();
         initComponents();
         cargarItems();
     }
@@ -202,12 +204,8 @@ public class CarritoVista extends JFrame {
     private void eliminarItem(int row) {
         Long idProducto = (Long) modeloTabla.getValueAt(row, 0);
         carrito.removeItem(idProducto);
-        try {
-            CarritoService.guardarCarrito(carrito);
-            cargarItems();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error al guardar el carrito: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        carritoService.guardarCarrito();
+        cargarItems();
     }
 
     private void vaciarCarrito() {
@@ -218,12 +216,8 @@ public class CarritoVista extends JFrame {
         
         if (confirmacion == JOptionPane.YES_OPTION) {
             carrito.vaciar();
-            try {
-                CarritoService.guardarCarrito(carrito);
-                cargarItems();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error al guardar el carrito: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            carritoService.guardarCarrito();
+            cargarItems();
         }
     }
 
@@ -237,7 +231,7 @@ public class CarritoVista extends JFrame {
             compraService.realizarCompra(carrito);
             JOptionPane.showMessageDialog(this, "¡Compra realizada con éxito!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             carrito.vaciar();
-            CarritoService.guardarCarrito(carrito);
+            carritoService.guardarCarrito();
             cargarItems();
             dispose();
         } catch (Exception ex) {

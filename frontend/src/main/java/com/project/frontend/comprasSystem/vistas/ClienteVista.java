@@ -26,6 +26,7 @@ public class ClienteVista extends JFrame {
     private JButton btnBuscar;
     private JButton btnMostrarTodos;
     private Carrito carrito;
+    private final CarritoService carritoService;
     private ProductoService productoService;
     private List<Producto> productosOriginales;
     private JPanel panelAlbum;
@@ -33,11 +34,8 @@ public class ClienteVista extends JFrame {
     private ImageService imageService;
 
     public ClienteVista() {
-        try {
-            this.carrito = CarritoService.cargarCarrito();
-        } catch (Exception e) {
-            this.carrito = new Carrito();
-        }
+        carritoService = CarritoService.getInstance();
+        carrito = carritoService.getCarrito();
         this.productoService = new ProductoService();
         imageService = new ImageService();
         initComponents();
@@ -252,22 +250,16 @@ public class ClienteVista extends JFrame {
         btnAdd.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
         btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnAdd.addActionListener(e -> {
-            try {
-                ItemCarrito item = new ItemCarrito();
-                item.setProducto(producto);
-                item.setCantidad(1);
-                carrito.addItem(item);
-                CarritoService.guardarCarrito(carrito);
-                JOptionPane.showMessageDialog(this,
-                    "Producto añadido al carrito",
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                    "Error al añadir al carrito: " + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            }
+            ItemCarrito item = new ItemCarrito();
+            item.setProducto(producto);
+            item.setCantidad(1);
+            carrito.addItem(item);
+            carritoService.guardarCarrito();
+            JOptionPane.showMessageDialog(this,
+                "Producto añadido al carrito",
+                "Éxito",
+                JOptionPane.INFORMATION_MESSAGE
+            );
         });
         card.add(btnAdd, BorderLayout.SOUTH);
         return card;
