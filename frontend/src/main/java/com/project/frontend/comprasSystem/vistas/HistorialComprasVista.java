@@ -5,7 +5,12 @@ import com.project.frontend.comprasSystem.services.CompraService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class HistorialComprasVista extends JFrame {
     private CompraService compraService;
@@ -13,7 +18,10 @@ public class HistorialComprasVista extends JFrame {
     private DefaultTableModel modeloTabla;
     private boolean esAdmin;
     private JTextField txtBuscar, txtUsuarioId, txtFechaInicio, txtFechaFin, txtTotalMin, txtTotalMax;
-    private JButton btnEliminar, btnModificar, btnActualizar, btnBuscar, btnDetalles;
+    private JButton btnEliminar, btnModificar, btnActualizar, btnBuscar, btnDetalles, btnLimpiarFiltros;
+    private JButton btnBusquedaAvanzada;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
 
     public HistorialComprasVista(boolean esAdmin) {
         this.esAdmin = esAdmin;
@@ -39,39 +47,53 @@ public class HistorialComprasVista extends JFrame {
         tablaCompras.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
         tablaCompras.getTableHeader().setBackground(new Color(0, 200, 180));
         tablaCompras.getTableHeader().setForeground(Color.BLACK);
+        tablaCompras.setSelectionBackground(new Color(0, 200, 180));
+        tablaCompras.setSelectionForeground(Color.BLACK);
+        tablaCompras.setShowHorizontalLines(false);
+        tablaCompras.setShowVerticalLines(false);
+        tablaCompras.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tablaCompras.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tablaCompras.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tablaCompras.getColumnModel().getColumn(2).setPreferredWidth(180);
+        tablaCompras.getColumnModel().getColumn(3).setPreferredWidth(120);
 
         JScrollPane scrollPane = new JScrollPane(tablaCompras);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane, BorderLayout.CENTER);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         panelBotones.setBackground(new Color(33, 33, 33));
 
-        btnDetalles = new JButton("Detalles");
-        btnDetalles.setBackground(new Color(0, 200, 180));
-        btnDetalles.setForeground(Color.WHITE);
+        btnDetalles = crearBoton("Detalles", "🔍", new Color(0, 200, 180), "Ver detalles de la compra seleccionada");
+        btnActualizar = crearBoton("Actualizar", "🔄", new Color(0, 200, 180), "Actualizar la tabla de compras");
+        btnActualizar.addActionListener(e -> cargarCompras());
         btnDetalles.addActionListener(e -> mostrarDetallesCompra());
 
-        btnActualizar = new JButton("Actualizar");
-        btnActualizar.setBackground(new Color(0, 200, 180));
-        btnActualizar.setForeground(Color.WHITE);
-        btnActualizar.addActionListener(e -> cargarCompras());
-
         txtBuscar = new JTextField(8);
-        btnBuscar = new JButton("Buscar por ID");
-        btnBuscar.setBackground(new Color(0, 200, 180));
-        btnBuscar.setForeground(Color.WHITE);
+        txtBuscar.setToolTipText("Buscar por ID de compra");
+        btnBuscar = crearBoton("Buscar por ID", "#", new Color(0, 200, 180), "Buscar compra por ID");
         btnBuscar.addActionListener(e -> buscarCompraPorId());
+        txtBuscar.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) buscarCompraPorId();
+            }
+        });
 
         // Filtros avanzados
         if (esAdmin) {
             txtUsuarioId = new JTextField(5);
+            txtUsuarioId.setToolTipText("Filtrar por ID de usuario");
             panelBotones.add(new JLabel("Usuario ID:"));
             panelBotones.add(txtUsuarioId);
         }
         txtFechaInicio = new JTextField(8);
+        txtFechaInicio.setToolTipText("Fecha de inicio (yyyy-MM-dd)");
         txtFechaFin = new JTextField(8);
+        txtFechaFin.setToolTipText("Fecha de fin (yyyy-MM-dd)");
         txtTotalMin = new JTextField(6);
+        txtTotalMin.setToolTipText("Total mínimo de la compra");
         txtTotalMax = new JTextField(6);
+        txtTotalMax.setToolTipText("Total máximo de la compra");
         panelBotones.add(new JLabel("Fecha Inicio (yyyy-MM-dd):"));
         panelBotones.add(txtFechaInicio);
         panelBotones.add(new JLabel("Fecha Fin (yyyy-MM-dd):"));
@@ -80,11 +102,13 @@ public class HistorialComprasVista extends JFrame {
         panelBotones.add(txtTotalMin);
         panelBotones.add(new JLabel("Total Max:"));
         panelBotones.add(txtTotalMax);
-        JButton btnBusquedaAvanzada = new JButton("Búsqueda Avanzada");
-        btnBusquedaAvanzada.setBackground(new Color(0, 200, 180));
-        btnBusquedaAvanzada.setForeground(Color.WHITE);
+        btnBusquedaAvanzada = crearBoton("Búsqueda Avanzada", "🔎", new Color(0, 200, 180), "Buscar compras por filtros avanzados");
         btnBusquedaAvanzada.addActionListener(e -> buscarPorFiltros());
         panelBotones.add(btnBusquedaAvanzada);
+
+        btnLimpiarFiltros = crearBoton("Limpiar Filtros", "🧹", new Color(33, 150, 243), "Limpiar todos los filtros y mostrar todas las compras");
+        btnLimpiarFiltros.addActionListener(e -> limpiarFiltros());
+        panelBotones.add(btnLimpiarFiltros);
 
         panelBotones.add(btnDetalles);
         panelBotones.add(btnActualizar);
@@ -92,21 +116,35 @@ public class HistorialComprasVista extends JFrame {
         panelBotones.add(btnBuscar);
 
         if (esAdmin) {
-            btnEliminar = new JButton("Eliminar");
-            btnEliminar.setBackground(new Color(200, 50, 50));
-            btnEliminar.setForeground(Color.WHITE);
+            btnEliminar = crearBoton("Eliminar", "🗑️", new Color(200, 50, 50), "Eliminar la compra seleccionada");
             btnEliminar.addActionListener(e -> eliminarCompraSeleccionada());
-
-            btnModificar = new JButton("Modificar");
-            btnModificar.setBackground(new Color(33, 150, 243));
-            btnModificar.setForeground(Color.WHITE);
+            btnModificar = crearBoton("Modificar", "✏️", new Color(33, 150, 243), "Modificar la compra seleccionada");
             btnModificar.addActionListener(e -> modificarCompraSeleccionada());
-
             panelBotones.add(btnModificar);
             panelBotones.add(btnEliminar);
         }
 
         add(panelBotones, BorderLayout.SOUTH);
+    }
+
+    private JButton crearBoton(String texto, String icono, Color color, String tooltip) {
+        JButton btn = new JButton(icono + " " + texto);
+        btn.setBackground(color);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+        btn.setToolTipText(tooltip);
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn.setBackground(color.brighter());
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn.setBackground(color);
+            }
+        });
+        return btn;
     }
 
     private void cargarCompras() {
@@ -122,10 +160,29 @@ public class HistorialComprasVista extends JFrame {
             modeloTabla.addRow(new Object[]{
                 compra.getId(),
                 compra.getUsuario() != null ? compra.getUsuario().getNombre() : "N/A",
-                compra.getFechaCompra(),
-                compra.getTotal()
+                compra.getFechaCompra() != null ? compra.getFechaCompra().toString() : "",
+                currencyFormat.format(compra.getTotal())
             });
         }
+        tablaCompras.clearSelection();
+        actualizarEstadoBotones();
+    }
+
+    private void limpiarFiltros() {
+        if (esAdmin && txtUsuarioId != null) txtUsuarioId.setText("");
+        txtFechaInicio.setText("");
+        txtFechaFin.setText("");
+        txtTotalMin.setText("");
+        txtTotalMax.setText("");
+        txtBuscar.setText("");
+        cargarCompras();
+    }
+
+    private void actualizarEstadoBotones() {
+        boolean haySeleccion = tablaCompras.getSelectedRow() != -1;
+        if (btnEliminar != null) btnEliminar.setEnabled(haySeleccion);
+        if (btnModificar != null) btnModificar.setEnabled(haySeleccion);
+        btnDetalles.setEnabled(haySeleccion);
     }
 
     private void eliminarCompraSeleccionada() {
@@ -140,6 +197,7 @@ public class HistorialComprasVista extends JFrame {
         compraService.eliminarCompra(id);
         modeloTabla.removeRow(fila);
         JOptionPane.showMessageDialog(this, "Compra eliminada.");
+        actualizarEstadoBotones();
     }
 
     private void buscarCompraPorId() {
@@ -163,14 +221,16 @@ public class HistorialComprasVista extends JFrame {
                     modeloTabla.addRow(new Object[]{
                         compra.getId(),
                         compra.getUsuario() != null ? compra.getUsuario().getNombre() : "N/A",
-                        compra.getFechaCompra(),
-                        compra.getTotal()
+                        compra.getFechaCompra() != null ? compra.getFechaCompra().toString() : "",
+                        currencyFormat.format(compra.getTotal())
                     });
                 }
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "ID inválido.");
         }
+        tablaCompras.clearSelection();
+        actualizarEstadoBotones();
     }
 
     private void modificarCompraSeleccionada() {
@@ -208,8 +268,8 @@ public class HistorialComprasVista extends JFrame {
             JOptionPane.showMessageDialog(this,
                 "ID: " + compra.getId() +
                 "\nUsuario: " + (compra.getUsuario() != null ? compra.getUsuario().getNombre() : "N/A") +
-                "\nFecha: " + compra.getFechaCompra() +
-                "\nTotal: " + compra.getTotal(),
+                "\nFecha: " + (compra.getFechaCompra() != null ? compra.getFechaCompra().toString() : "") +
+                "\nTotal: " + currencyFormat.format(compra.getTotal()),
                 "Detalles de Compra",
                 JOptionPane.INFORMATION_MESSAGE
             );
@@ -235,9 +295,11 @@ public class HistorialComprasVista extends JFrame {
             modeloTabla.addRow(new Object[]{
                 compra.getId(),
                 compra.getUsuario() != null ? compra.getUsuario().getNombre() : "N/A",
-                compra.getFechaCompra(),
-                compra.getTotal()
+                compra.getFechaCompra() != null ? compra.getFechaCompra().toString() : "",
+                currencyFormat.format(compra.getTotal())
             });
         }
+        tablaCompras.clearSelection();
+        actualizarEstadoBotones();
     }
 } 

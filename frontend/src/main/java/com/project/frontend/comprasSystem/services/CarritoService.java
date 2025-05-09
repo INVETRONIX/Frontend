@@ -31,7 +31,7 @@ public class CarritoService implements Serializable {
 
     public void guardarCarrito() {
         try (FileOutputStream file = new FileOutputStream(CARRO_FILE);
-             ObjectOutputStream escritor = new ObjectOutputStream(file)) {
+            ObjectOutputStream escritor = new ObjectOutputStream(file)) {
             escritor.writeObject(carrito);
         } catch (IOException ex) {
             System.err.println("Error al guardar el carrito: " + ex.getMessage());
