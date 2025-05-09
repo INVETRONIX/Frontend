@@ -77,6 +77,16 @@ public class ProductoVista extends JFrame {
         lblUser.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         lblUser.setForeground(new Color(180, 180, 180));
         panelHeader.add(lblUser, BorderLayout.EAST);
+        // Botón Historial de Compras
+        JButton btnHistorial = new JButton("Historial de Compras");
+        btnHistorial.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnHistorial.setBackground(new Color(0, 200, 180));
+        btnHistorial.setForeground(Color.WHITE);
+        btnHistorial.setFocusPainted(false);
+        btnHistorial.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnHistorial.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnHistorial.addActionListener(e -> new com.project.frontend.comprasSystem.vistas.HistorialComprasVista(true).setVisible(true));
+        panelHeader.add(btnHistorial, BorderLayout.CENTER);
         add(panelHeader, BorderLayout.NORTH);
 
         // Panel central (resumen + tabla)

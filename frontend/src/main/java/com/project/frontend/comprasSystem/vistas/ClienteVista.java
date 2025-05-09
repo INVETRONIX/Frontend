@@ -118,7 +118,23 @@ public class ClienteVista extends JFrame {
         btnVerCarrito.setFocusPainted(false);
         btnVerCarrito.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         btnVerCarrito.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        panelHeader.add(btnVerCarrito, BorderLayout.EAST);
+
+        // Botón Historial de Compras
+        JButton btnHistorial = new JButton("Historial de Compras");
+        btnHistorial.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnHistorial.setBackground(new Color(0, 200, 180));
+        btnHistorial.setForeground(Color.WHITE);
+        btnHistorial.setFocusPainted(false);
+        btnHistorial.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnHistorial.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnHistorial.addActionListener(e -> new HistorialComprasVista(false).setVisible(true));
+
+        // Panel para ambos botones
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        panelBotones.setOpaque(false);
+        panelBotones.add(btnVerCarrito);
+        panelBotones.add(btnHistorial);
+        panelHeader.add(panelBotones, BorderLayout.EAST);
 
         add(panelHeader, BorderLayout.NORTH);
 

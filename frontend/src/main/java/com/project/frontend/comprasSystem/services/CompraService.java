@@ -1,11 +1,13 @@
 package com.project.frontend.comprasSystem.services;
 
 import com.project.frontend.comprasSystem.models.Carrito;
+import com.project.frontend.comprasSystem.models.Compra;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,4 +55,40 @@ public class CompraService {
             throw new RuntimeException("Error al realizar la compra: " + e.getMessage());
         }
     }
+
+    // Todas las compras (para admin)
+    public List<Compra> obtenerTodasLasCompras() {
+        Compra[] compras = restTemplate.getForObject(API_URL, Compra[].class);
+        if (compras == null) return java.util.Collections.emptyList();
+        return Arrays.asList(compras);
+    }
+
+    // Compras por usuario (para cliente)
+    public List<Compra> obtenerComprasPorUsuario(Long usuarioId) {
+        Compra[] compras = restTemplate.getForObject(API_URL + "/usuario/" + usuarioId, Compra[].class);
+        if (compras == null) return java.util.Collections.emptyList();
+        return Arrays.asList(compras);
+    }
+
+    public void eliminarCompra(Long id) {
+        restTemplate.delete(API_URL + "/" + id);
+    }
+
+    public void actualizarCompra(Long id, Compra compra) {
+        restTemplate.put(API_URL + "/" + id, compra);
+    }
+
+    public List<Compra> buscarComprasPorFiltros(Long usuarioId, String fechaInicio, String fechaFin, Double totalMin, Double totalMax) {
+        StringBuilder url = new StringBuilder(API_URL + "/filtros?");
+        if (usuarioId != null) url.append("usuarioId=").append(usuarioId).append("&");
+        if (fechaInicio != null && !fechaInicio.isEmpty()) url.append("fechaInicio=").append(fechaInicio).append("&");
+        if (fechaFin != null && !fechaFin.isEmpty()) url.append("fechaFin=").append(fechaFin).append("&");
+        if (totalMin != null) url.append("totalMin=").append(totalMin).append("&");
+        if (totalMax != null) url.append("totalMax=").append(totalMax);
+        Compra[] compras = restTemplate.getForObject(url.toString(), Compra[].class);
+        if (compras == null) return java.util.Collections.emptyList();
+        return Arrays.asList(compras);
+    }
+
+    // Puedes agregar métodos para actualizar y buscar por filtros si lo necesitas
 } 
