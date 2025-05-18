@@ -1,5 +1,10 @@
 package com.project.frontend.SYSTEMgemini.service;
 
-public interface IGeminiService {
+import com.project.frontend.SYSTEMgemini.model.GeminiResponse;
+import retrofit2.Call;
+import retrofit2.http.GET;
 
+public interface IGeminiService {
+    @GET("/api/gemini/predecir")
+    Call<GeminiResponse> analizarVentas();
 }
