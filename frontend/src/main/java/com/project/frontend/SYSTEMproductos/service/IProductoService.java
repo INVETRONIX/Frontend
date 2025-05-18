@@ -1,9 +1,7 @@
 package com.project.frontend.SYSTEMproductos.service;
 
 import java.util.List;
-
 import com.project.frontend.SYSTEMproductos.model.Producto;
-
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
