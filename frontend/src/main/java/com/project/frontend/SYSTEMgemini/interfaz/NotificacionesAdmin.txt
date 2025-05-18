@@ -1,0 +1,5 @@
+ventana donde estan las notificaciones y se puede hacer la prediccion de IA
+
+tablaNotificaciones
+btnPredecir
+btnVolver

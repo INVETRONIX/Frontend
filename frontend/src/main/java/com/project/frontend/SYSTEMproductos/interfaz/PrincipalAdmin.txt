@@ -1,0 +1,12 @@
+ventana principal de administrador aqui
+
+txtEliminar
+btnEliminar
+btnAgregar
+btnModificar
+btnNotificaciones
+txtNombre
+txtPrecio
+txtStock
+btnBuscar
+tablaProductos

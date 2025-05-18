@@ -1,0 +1,8 @@
+ventana de formulario para agregar un nuevo producto aqui
+
+txtNombre
+txtDescripcion
+txtPrecio
+txtStock
+btnGuardar
+btnVolver

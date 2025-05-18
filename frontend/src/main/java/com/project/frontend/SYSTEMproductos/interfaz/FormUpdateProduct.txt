@@ -1,0 +1,10 @@
+ventana de formulario para modificar un producto
+
+txtNombre
+txtBuscar
+txtDescripcion
+txtStock
+txtPrecio
+btnBuscar
+btnActualizar
+btnVolver
