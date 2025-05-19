@@ -2,7 +2,6 @@ package com.project.frontend.SYSTEMlogin.data;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 

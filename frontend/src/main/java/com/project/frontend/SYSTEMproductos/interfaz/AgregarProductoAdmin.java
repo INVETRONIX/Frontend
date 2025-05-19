@@ -4,17 +4,24 @@
  */
 package com.project.frontend.SYSTEMproductos.interfaz;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
+import com.project.frontend.SYSTEMproductos.model.Producto;
+import com.project.frontend.core.BackendException;
+
 /**
  *
  * @author sebastian
  */
 public class AgregarProductoAdmin extends javax.swing.JFrame {
-
+    private ControllerProducto controller;
     /**
      * Creates new form AgregarPoductoAdmin1
      */
     public AgregarProductoAdmin() {
         initComponents();
+        this.controller = new ControllerProducto();
     }
 
     /**
@@ -164,7 +171,25 @@ public class AgregarProductoAdmin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        try {
+            String nombre = txtNombre.getText();
+            String descripcion = txtDescripcion.getText();
+            double precio = Double.parseDouble(txtPrecio.getText());
+            int cantidad = Integer.parseInt(txtCantidadEnStock.getText());
 
+            Producto producto = new Producto();
+            producto.setNombre(nombre);
+            producto.setDescripcion(descripcion);
+            producto.setPrecio(precio);
+            producto.setStock(cantidad);
+
+            controller.createProducto(producto);
+            JOptionPane.showMessageDialog(this, "Producto agregado correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (BackendException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al conectar con el servidor", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
