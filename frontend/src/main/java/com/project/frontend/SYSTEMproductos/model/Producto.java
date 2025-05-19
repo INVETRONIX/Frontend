@@ -13,10 +13,10 @@ public class Producto {
     private String descripcion;
 
     @SerializedName("precio")
-    private double precio;
+    private Double precio;
 
     @SerializedName("stock")
-    private int stock;
+    private Integer stock;
 
     public Producto(){}
 
@@ -44,19 +44,19 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public double getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(double precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 

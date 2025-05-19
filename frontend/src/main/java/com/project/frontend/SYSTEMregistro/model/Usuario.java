@@ -17,7 +17,7 @@ public class Usuario {
     private String contrasena;
 
     @SerializedName("edad")
-    private String edad;
+    private Integer edad;
 
     public Usuario() {}
 
@@ -53,11 +53,11 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
-    public String getEdad() {
+    public Integer getEdad() {
         return edad;
     }
 
-    public void setEdad(String edad) {
+    public void setEdad(Integer edad) {
         this.edad = edad;
     }
 

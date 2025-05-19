@@ -4,13 +4,20 @@
  */
 package com.project.frontend.SYSTEMlogin.interfaz;
 
+import javax.swing.JOptionPane;
+import com.project.frontend.SYSTEMlogin.controller.ControllerLogin;
+import com.project.frontend.SYSTEMlogin.data.TokenManager;
+import com.project.frontend.SYSTEMlogin.model.LoginRequest;
+import com.project.frontend.SYSTEMproductos.interfaz.VentanaPrincipalAdmin;
 import com.project.frontend.SYSTEMregistro.interfaz.RegistroUsuario;
+import com.project.frontend.core.BackendException;
 
 /**
  *
  * @author sebastian
  */
 public class Login extends javax.swing.JFrame {
+    private ControllerLogin controlador;
 
     /**
      * Creates new form login
@@ -18,6 +25,7 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         this.setLocationRelativeTo(null);
+        controlador = new ControllerLogin();
     }
 
     /**
@@ -141,6 +149,33 @@ public class Login extends javax.swing.JFrame {
         cambio.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegistrarseActionPerformed
+
+    private void btnInicioSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioSesionActionPerformed
+        try {
+            String email = txtEmail.getText();
+            String contraseña = txtContraseña.getText();
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.setCorreo(email);
+            loginRequest.setContrasena(contraseña);
+
+            controlador.login(loginRequest);
+
+            if (TokenManager.getInstance().getToken() != null) {
+                if(TokenManager.getInstance().getToken().equals("ADMIN")){
+                    VentanaPrincipalAdmin cambio=new VentanaPrincipalAdmin();
+                    cambio.setVisible(true);
+                    this.dispose();
+                }else{
+                    System.out.println("Ventana principal usuario");
+                }
+            }
+        } catch (BackendException e) {
+            JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnInicioSesionActionPerformed
 
     /**
      * @param args the command line arguments

@@ -4,13 +4,19 @@
  */
 package com.project.frontend.SYSTEMregistro.interfaz;
 
+import javax.swing.JOptionPane;
+
 import com.project.frontend.SYSTEMlogin.interfaz.Login;
+import com.project.frontend.SYSTEMregistro.controller.ControllerUsuario;
+import com.project.frontend.SYSTEMregistro.model.Usuario;
+import com.project.frontend.core.BackendException;
 
 /**
  *
  * @author sebastian
  */
 public class RegistroUsuario extends javax.swing.JFrame {
+    private ControllerUsuario controlador;
 
     /**
      * Creates new form REgistroUsuario
@@ -18,6 +24,7 @@ public class RegistroUsuario extends javax.swing.JFrame {
     public RegistroUsuario() {
         initComponents();
         this.setLocationRelativeTo(null);
+        controlador = new ControllerUsuario();
     }
 
     /**
@@ -174,7 +181,25 @@ public class RegistroUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarActionPerformed
 
     private void btnRegistrarmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarmeActionPerformed
+        try{
+            String nombre = txtNombre.getText();
+            Integer edad = Integer.parseInt(txtEdad.getText());
+            String email = txtEmail.getText();
+            String contraseña = txtContraseña.getText();
 
+            Usuario usuario = new Usuario();
+            usuario.setNombre(nombre);
+            usuario.setEdad(edad);
+            usuario.setCorreo(email);
+            usuario.setContrasena(contraseña);
+
+            controlador.createUser(usuario);
+            JOptionPane.showMessageDialog(null, "Usuario registrado correctamente");
+        }catch(BackendException e){
+            JOptionPane.showMessageDialog(null, "Error al registrar el usuario: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al registrar el usuario: " + e.getMessage());
+        }
     }//GEN-LAST:event_btnRegistrarmeActionPerformed
 
     /**
