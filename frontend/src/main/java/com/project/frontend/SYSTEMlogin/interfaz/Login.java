@@ -158,30 +158,39 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarseActionPerformed
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
-        try {
-            String email = txtEmail.getText();
-            String contraseña = txtContraseña.getText();
-            System.out.println("1");
-            LoginRequest loginRequest = new LoginRequest();
-            loginRequest.setCorreo(email);
-            loginRequest.setContrasena(contraseña);
-            System.out.println("2");
-            controlador.login(loginRequest);
-            System.out.println("3");
-            if (TokenManager.getInstance().getToken() != null) {
-                if(TokenManager.getInstance().getToken().equals("ADMIN")){
-                    VentanaPrincipalAdmin cambio=new VentanaPrincipalAdmin();
-                    cambio.setVisible(true);
-                    this.dispose();
-                }else{
-                    System.out.println("Ventana principal usuario");
-                }
+       try {
+        String email = txtEmail.getText();
+        String contraseña = txtContraseña.getText();
+        
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setCorreo(email);
+        loginRequest.setContrasena(contraseña);
+        
+        controlador.login(loginRequest);
+        
+        if (TokenManager.getInstance().isLoggedIn()) {
+            String userRole = TokenManager.getInstance().getUserRole();
+            
+            // Navegar según el rol del usuario
+            if ("ADMIN".equals(userRole)) {
+                VentanaPrincipalAdmin cambio = new VentanaPrincipalAdmin();
+                cambio.setVisible(true);
+                this.dispose();
+            } else if ("CLIENTE".equals(userRole)) {
+                // Crear ventana para cliente
+                System.out.println("Bienvenido a la ventana del cliente");
+            } else {
+                JOptionPane.showMessageDialog(null, "Rol de usuario no reconocido: " + userRole);
             }
-        } catch (BackendException e) {
-            JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(null, "Error: No se pudo obtener el token de autenticación");
         }
+    } catch (BackendException e) {
+        JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
+        e.printStackTrace();
+    }
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     /**
