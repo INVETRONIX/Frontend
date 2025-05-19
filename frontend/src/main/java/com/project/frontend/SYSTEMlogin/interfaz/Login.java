@@ -154,13 +154,13 @@ public class Login extends javax.swing.JFrame {
         try {
             String email = txtEmail.getText();
             String contraseña = txtContraseña.getText();
-
+            System.out.println("1");
             LoginRequest loginRequest = new LoginRequest();
             loginRequest.setCorreo(email);
             loginRequest.setContrasena(contraseña);
-
+            System.out.println("2");
             controlador.login(loginRequest);
-
+            System.out.println("3");
             if (TokenManager.getInstance().getToken() != null) {
                 if(TokenManager.getInstance().getToken().equals("ADMIN")){
                     VentanaPrincipalAdmin cambio=new VentanaPrincipalAdmin();
