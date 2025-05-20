@@ -174,6 +174,13 @@ public class RegistroUsuario extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void limpiarCampos(){
+        txtNombre.setText("");
+        txtEdad.setText("");
+        txtEmail.setText("");
+        txtContraseña.setText("");
+    }
+
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
         Login cambio=new Login();
         cambio.setVisible(true);
@@ -187,6 +194,11 @@ public class RegistroUsuario extends javax.swing.JFrame {
             String email = txtEmail.getText();
             String contraseña = txtContraseña.getText();
 
+            if ((nombre.isEmpty() || nombre.isBlank()) || (email.isEmpty() || email.isBlank())) {
+                JOptionPane.showMessageDialog(this, "Por favor complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             Usuario usuario = new Usuario();
             usuario.setNombre(nombre);
             usuario.setEdad(edad);
@@ -195,6 +207,9 @@ public class RegistroUsuario extends javax.swing.JFrame {
 
             controlador.createUser(usuario);
             JOptionPane.showMessageDialog(null, "Usuario registrado correctamente");
+
+            limpiarCampos();
+
         }catch(BackendException e){
             JOptionPane.showMessageDialog(null, "Error al registrar el usuario: " + e.getMessage());
         } catch(NumberFormatException e){

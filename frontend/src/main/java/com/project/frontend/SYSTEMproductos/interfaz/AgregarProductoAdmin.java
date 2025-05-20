@@ -170,12 +170,24 @@ public class AgregarProductoAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void limpiarCampos(){
+        txtNombre.setText("");
+        txtDescripcion.setText("");
+        txtPrecio.setText("");
+        txtCantidadEnStock.setText("");
+    }
+
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         try {
             String nombre = txtNombre.getText();
             String descripcion = txtDescripcion.getText();
             double precio = Double.parseDouble(txtPrecio.getText());
             int cantidad = Integer.parseInt(txtCantidadEnStock.getText());
+
+            if ((nombre.isEmpty() || nombre.isBlank()) || (descripcion.isEmpty() || descripcion.isBlank()) ) {
+                JOptionPane.showMessageDialog(this, "COmplete todoos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             Producto producto = new Producto();
             producto.setNombre(nombre);
@@ -185,6 +197,8 @@ public class AgregarProductoAdmin extends javax.swing.JFrame {
 
             controller.createProducto(producto);
             JOptionPane.showMessageDialog(this, "Producto agregado correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            limpiarCampos();
         } catch (BackendException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch(NumberFormatException e){
