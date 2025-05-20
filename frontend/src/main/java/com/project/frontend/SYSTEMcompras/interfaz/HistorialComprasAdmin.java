@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.project.frontend.SYSTEMcompras.controller.ControllerCompra;
 import com.project.frontend.SYSTEMcompras.model.Compra;
+import com.project.frontend.SYSTEMproductos.interfaz.VentanaPrincipalAdmin;
 import com.project.frontend.core.BackendException;
 
 /**
@@ -488,7 +489,9 @@ public class HistorialComprasAdmin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        
+        VentanaPrincipalAdmin cambio=  new VentanaPrincipalAdmin();
+        cambio.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     /**

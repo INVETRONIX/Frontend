@@ -197,8 +197,10 @@ public class RegistroUsuario extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Usuario registrado correctamente");
         }catch(BackendException e){
             JOptionPane.showMessageDialog(null, "Error al registrar el usuario: " + e.getMessage());
+        } catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Por favor ingrese valores numericos validos","Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al registrar el usuario: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al registrar el usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE, null);
         }
     }//GEN-LAST:event_btnRegistrarmeActionPerformed
 

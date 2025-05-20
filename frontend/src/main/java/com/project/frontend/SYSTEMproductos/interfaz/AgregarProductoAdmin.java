@@ -187,6 +187,8 @@ public class AgregarProductoAdmin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Producto agregado correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (BackendException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Ingrese valores numericos por favor", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al conectar con el servidor", "Error", JOptionPane.ERROR_MESSAGE);
         }

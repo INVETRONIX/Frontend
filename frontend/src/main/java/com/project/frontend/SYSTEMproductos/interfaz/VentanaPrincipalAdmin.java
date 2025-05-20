@@ -408,6 +408,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
     private void btnCerrarSesion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion1ActionPerformed
        HistorialComprasAdmin cambio = new HistorialComprasAdmin();
        cambio.setVisible(true);
+       this.dispose();
     }//GEN-LAST:event_btnCerrarSesion1ActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
