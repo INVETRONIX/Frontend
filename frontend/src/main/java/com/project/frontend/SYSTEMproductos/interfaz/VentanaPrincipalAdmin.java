@@ -5,6 +5,7 @@
 package com.project.frontend.SYSTEMproductos.interfaz;
 
 import com.project.frontend.SYSTEMgemini.interfaz.NotificacionesAdmin;
+import com.project.frontend.SYSTEMlogin.data.TokenManager;
 import com.project.frontend.SYSTEMlogin.interfaz.Login;
 import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
 import com.project.frontend.SYSTEMproductos.model.Producto;
@@ -389,6 +390,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         Login cambio = new Login();
         cambio.setVisible(true);
         this.dispose();
+        TokenManager.getInstance().saveToken(null);
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {

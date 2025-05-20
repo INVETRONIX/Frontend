@@ -4,20 +4,298 @@
  */
 package com.project.frontend.SYSTEMcompras.interfaz;
 
-import com.project.frontend.SYSTEMproductos.interfaz.VentanaPrincipalAdmin;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+import com.project.frontend.SYSTEMcompras.controller.ControllerCompra;
+import com.project.frontend.SYSTEMcompras.model.Compra;
+import com.project.frontend.core.BackendException;
 
 /**
  *
  * @author sebastian
  */
 public class HistorialComprasCliente extends javax.swing.JFrame {
-
+    private ControllerCompra controller;
+    private DefaultTableModel tableModel;
     /**
      * Creates new form HistorialComprasCliente
      */
     public HistorialComprasCliente() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        this.controller = new ControllerCompra();
+        this.tableModel = (DefaultTableModel) tablaCompras.getModel();
+        
+        try {
+            llenarTabla();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar las compras: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }   
+
+          // Configurar listener para selección de filas
+        tablaCompras.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = tablaCompras.getSelectedRow();
+                if (selectedRow != -1) {
+                    btnModificarCompra.setEnabled(true);
+                    btnEliminar.setEnabled(true);
+                    
+                // Cargar datos en los campos de texto
+                    txtId.setText(tablaCompras.getValueAt(selectedRow, 0).toString());
+                    txtFecha.setText(tablaCompras.getValueAt(selectedRow, 1).toString());
+                    txtHora.setText(tablaCompras.getValueAt(selectedRow, 2).toString());
+                    txtIdUsuario.setText(tablaCompras.getValueAt(selectedRow, 3).toString());
+                } else {
+                    btnModificarCompra.setEnabled(false);
+                    btnEliminar.setEnabled(false);
+                    limpiarCampos();
+                }
+            }
+        });
+
+        // Inicialmente deshabilitar botones
+        btnModificarCompra.setEnabled(false);
+        btnEliminar.setEnabled(false);
     }
+    
+    private void llenarTabla() throws IOException {
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new Object[]{"ID", "Fecha", "Hora", "ID Usuario", "Producto", "Total"});
+        
+        List<Compra> lista = controller.getAllCompras();
+        if (lista == null || lista.isEmpty()) {
+            tablaCompras.setModel(model);
+            return;
+        }
+
+        DateTimeFormatter fechaFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        
+        for (Compra compra : lista) {
+            model.addRow(new Object[]{
+                compra.getId(),
+                compra.getFecha() != null ? compra.getFecha().format(fechaFormatter) : "",
+                compra.getHora() != null ? compra.getHora().format(horaFormatter) : "",
+                compra.getUsuario() != null ? compra.getUsuario().getId() : "",
+                compra.getProducto() != null ? compra.getProducto().getNombre() : "",
+                String.format("$%,.2f", compra.getTotal())
+            });
+        }
+        
+        tablaCompras.setModel(model);
+    }
+    
+    private void limpiarCampos() {
+        txtId.setText("");
+        txtFecha.setText("");
+        txtHora.setText("");
+        txtIdUsuario.setText("");
+        
+    }
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
+        String idText = txtId.getText().trim();
+        String fechaText = txtFecha.getText().trim();
+        String horaText = txtHora.getText().trim();
+        String idUsuarioText = txtIdUsuario.getText().trim();
+        
+        // Si todos los campos están vacíos, recargar tabla completa
+        if (idText.isEmpty() && fechaText.isEmpty() && horaText.isEmpty() && idUsuarioText.isEmpty()) {
+            try {
+                llenarTabla();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al cargar las compras: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return;
+        }
+        
+        try {
+            List<Compra> compras = null;
+            
+            // Prioridad: buscar por ID si está lleno
+            if (!idText.isEmpty()) {
+                try {
+                    Long id = Long.parseLong(idText);
+                    Optional<Compra> compra = controller.getCompraById(id);
+                    if (compra.isPresent()) {
+                        Compra c = compra.get();
+                        DateTimeFormatter fechaFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                        
+                        String mensaje = String.format(
+                            "ID: %d\nFecha: %s\nHora: %s\nUsuario ID: %d\nProducto: %s\nTotal: $%,.2f",
+                            c.getId(),
+                            c.getFecha() != null ? c.getFecha().format(fechaFormatter) : "N/A",
+                            c.getHora() != null ? c.getHora().format(horaFormatter) : "N/A",
+                            c.getUsuario() != null ? c.getUsuario().getId() : 0,
+                            c.getProducto() != null ? c.getProducto().getNombre() : "N/A",
+                            c.getTotal()
+                        );
+                        
+                        JOptionPane.showMessageDialog(
+                            this,
+                            mensaje,
+                            "Detalles de la Compra",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } else {
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "No se encontró ninguna compra con ese ID",
+                            "Información",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+                    }
+                    return;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Por favor ingrese un ID válido", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } else {
+                // Buscar por otros filtros
+                LocalDate fecha = null;
+                LocalTime hora = null;
+                Long idUsuario = null;
+                
+                if (!fechaText.isEmpty()) {
+                    try {
+                        fecha = LocalDate.parse(fechaText, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    } catch (DateTimeParseException e) {
+                        JOptionPane.showMessageDialog(this, "Formato de fecha inválido. Use dd/MM/yyyy", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                
+                if (!horaText.isEmpty()) {
+                    try {
+                        hora = LocalTime.parse(horaText, DateTimeFormatter.ofPattern("HH:mm"));
+                    } catch (DateTimeParseException e) {
+                        JOptionPane.showMessageDialog(this, "Formato de hora inválido. Use HH:mm", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                
+                if (!idUsuarioText.isEmpty()) {
+                    try {
+                        idUsuario = Long.parseLong(idUsuarioText);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(this, "Por favor ingrese un ID de usuario válido", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                
+                compras = controller.findByFilters(fecha, idUsuario, hora);
+            }
+            
+            // Mostrar resultados en la tabla
+            if (compras != null && !compras.isEmpty()) {
+                DefaultTableModel model = (DefaultTableModel) tablaCompras.getModel();
+                model.setRowCount(0); // Limpiar tabla
+                
+                DateTimeFormatter fechaFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                
+                for (Compra compra : compras) {
+                    model.addRow(new Object[]{
+                        compra.getId(),
+                        compra.getFecha() != null ? compra.getFecha().format(fechaFormatter) : "",
+                        compra.getHora() != null ? compra.getHora().format(horaFormatter) : "",
+                        compra.getUsuario() != null ? compra.getUsuario().getId() : "",
+                        compra.getProducto() != null ? compra.getProducto().getNombre() : "",
+                        String.format("$%,.2f", compra.getTotal())
+                    });
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontraron compras con los criterios especificados", "Información", JOptionPane.INFORMATION_MESSAGE);
+                DefaultTableModel model = (DefaultTableModel) tablaCompras.getModel();
+                model.setRowCount(0); // Limpiar tabla si no hay resultados
+            }
+        } catch (IOException | BackendException e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar compras: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = tablaCompras.getSelectedRow();
+        if (selectedRow != -1) {
+            int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea eliminar esta compra?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                try {
+                    String id = tablaCompras.getValueAt(selectedRow, 0).toString();
+                    controller.deleteCompra(Long.parseLong(id));
+                    
+                    DefaultTableModel currentTableModel = (DefaultTableModel) tablaCompras.getModel();
+                    currentTableModel.removeRow(selectedRow);
+                    
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Compra eliminada exitosamente",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                    
+                    limpiarCampos();
+                    
+                } catch (BackendException | NumberFormatException | IOException e) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error al eliminar la compra: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }
+    }
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = tablaCompras.getSelectedRow();
+        if (selectedRow != -1) {
+            try {
+                String id = tablaCompras.getValueAt(selectedRow, 0).toString();
+                String fecha = tablaCompras.getValueAt(selectedRow, 1).toString();
+                String hora = tablaCompras.getValueAt(selectedRow, 2).toString();
+                String idUsuario = tablaCompras.getValueAt(selectedRow, 3).toString();
+                String producto = tablaCompras.getValueAt(selectedRow, 4).toString();
+                String total = tablaCompras.getValueAt(selectedRow, 5).toString();
+                
+                ModificacionCompra modificarVentana = new ModificacionCompra();
+                modificarVentana.txtId.setText(id);
+                modificarVentana.txtFecha.setText(fecha);
+                modificarVentana.txtHora.setText(hora);
+                modificarVentana.txtIdUsuario.setText(idUsuario);
+                modificarVentana.txtProducto.setText(producto);
+                modificarVentana.txtTotal.setText(total);
+                
+                modificarVentana.setVisible(true);
+                this.dispose();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Error al abrir la ventana de modificación: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,19 +310,19 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaCompras = new javax.swing.JTable();
         btnVolver = new javax.swing.JButton();
         txtId = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtId1 = new javax.swing.JTextField();
+        txtHora = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        txtId2 = new javax.swing.JTextField();
-        txtId3 = new javax.swing.JTextField();
+        txtFecha = new javax.swing.JTextField();
+        txtIdUsuario = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
-        btnModificar = new javax.swing.JButton();
-        btnBuscar1 = new javax.swing.JButton();
+        btnModificarCompra = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -58,18 +336,18 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Aqui podrás ver todas tus acciones!!");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaCompras.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "IdUsuario", "Hora", "Fecha"
+                "Id", "IdUsuario", "Hora", "Fecha", "IdProducto", "Total"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaCompras);
 
         btnVolver.setText("Volver");
         btnVolver.addActionListener(new java.awt.event.ActionListener() {
@@ -84,7 +362,7 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Id");
 
-        txtId1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtHora.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel5.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -94,9 +372,9 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Fecha");
 
-        txtId2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtFecha.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        txtId3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtIdUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel7.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -111,21 +389,21 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
             }
         });
 
-        btnModificar.setBackground(new java.awt.Color(51, 51, 255));
-        btnModificar.setForeground(new java.awt.Color(255, 255, 255));
-        btnModificar.setText("Modificar");
-        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+        btnModificarCompra.setBackground(new java.awt.Color(51, 51, 255));
+        btnModificarCompra.setForeground(new java.awt.Color(255, 255, 255));
+        btnModificarCompra.setText("Modificar");
+        btnModificarCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarActionPerformed(evt);
+                btnModificarCompraActionPerformed(evt);
             }
         });
 
-        btnBuscar1.setBackground(new java.awt.Color(51, 51, 255));
-        btnBuscar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscar1.setText("Eliminar");
-        btnBuscar1.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setBackground(new java.awt.Color(51, 51, 255));
+        btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscar1ActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
 
@@ -141,13 +419,13 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel4)
-                            .addComponent(txtId1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
-                            .addComponent(txtId2, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtId3, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7)
                             .addComponent(btnVolver)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -156,7 +434,7 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnModificarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 22, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(41, 41, 41)
@@ -181,25 +459,25 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(40, 40, 40)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtId1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtId2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtId3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
                         .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(98, 98, 98)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnModificarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(57, 57, 57)
                 .addComponent(btnVolver)
@@ -225,19 +503,6 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         
     }//GEN-LAST:event_btnVolverActionPerformed
-
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
-    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        ModificacionCompra cambio=new ModificacionCompra();
-        cambio.setVisible(true);
-    }//GEN-LAST:event_btnModificarActionPerformed
-
-    private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -276,8 +541,8 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnBuscar1;
-    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificarCompra;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
@@ -287,10 +552,10 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tablaCompras;
+    private javax.swing.JTextField txtFecha;
+    private javax.swing.JTextField txtHora;
     private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtId1;
-    private javax.swing.JTextField txtId2;
-    private javax.swing.JTextField txtId3;
+    private javax.swing.JTextField txtIdUsuario;
     // End of variables declaration//GEN-END:variables
 }
