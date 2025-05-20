@@ -10,6 +10,7 @@ import com.project.frontend.SYSTEMproductos.model.Producto;
 import com.project.frontend.core.BackendException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -101,6 +102,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         btnRegistrarme2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        txtBuscar = new javax.swing.JTextField();
         panelProductos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaProductos = new javax.swing.JTable();
@@ -196,6 +198,11 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         });
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -232,9 +239,10 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                         .addGap(41, 41, 41)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(363, 363, 363)
+                                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)                                
                                 .addComponent(btnEliminar))
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))) // Keeping txtBuscar for potential general search, or maybe remove it if not needed?
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(panelProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -264,7 +272,9 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(jLabel1)
                 .addGap(19, 19, 19)
-                .addComponent(btnEliminar)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEliminar))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(38, 38, 38)
@@ -366,9 +376,121 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         cambio.setVisible(true);
     }//GEN-LAST:event_btnNotificacionesActionPerformed
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
+    private void cmbFiltroActionPerformed(java.awt.event.ActionEvent evt) {
+        // Limpiar el campo de búsqueda cuando se cambia el tipo de filtro
+        txtBuscar.setText("");
+    }
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
+        String idText = txtId.getText().trim();
+        String nombre = txtName.getText().trim();
+        String precioText = txtPrecio.getText().trim();
+        String stockText = txtStock.getText().trim();
+
+        // Si todos los campos están vacíos, recargar la tabla completa
+        if (idText.isEmpty() && nombre.isEmpty() && precioText.isEmpty() && stockText.isEmpty()) {
+            try {
+                llenarTabla();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return;
+        }
+
+        try {
+            List<Producto> productos = new java.util.ArrayList<>();
+
+            // Prioridad: buscar por ID si está lleno
+            if (!idText.isEmpty()) {
+                try {
+                    Long id = Long.parseLong(idText);
+                    Optional<Producto> producto = controller.getProductoById(id);
+                    if (producto.isPresent()) {
+                         Producto p = producto.get();
+                            String mensaje = String.format(
+                                "ID: %d\nNombre: %s\nDescripción: %s\nPrecio: %.2f\nStock: %d",
+                                p.getId(),
+                                p.getNombre(),
+                                p.getDescripcion(),
+                                p.getPrecio(),
+                                p.getStock()
+                            );
+                            JOptionPane.showMessageDialog(
+                                this,
+                                mensaje,
+                                "Detalles del Producto",
+                                JOptionPane.INFORMATION_MESSAGE
+                            );
+                    } else {
+                         JOptionPane.showMessageDialog(
+                                this,
+                                "No se encontró ningún producto con ese ID",
+                                "Información",
+                                JOptionPane.INFORMATION_MESSAGE
+                            );
+                    }
+                     // Si se buscó por ID, no continuar con otros filtros
+                    return;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Por favor ingrese un ID válido", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } else { // Si ID está vacío, buscar por otros filtros
+                // Usar findByFilters si hay más de un campo lleno (o uno solo que no sea ID)
+                if (!nombre.isEmpty() || !precioText.isEmpty() || !stockText.isEmpty()) {
+                    Double precio = null;
+                    Integer stock = null;
+
+                    if (!precioText.isEmpty()) {
+                        try {
+                            precio = Double.parseDouble(precioText);
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(this, "Por favor ingrese un precio válido", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+
+                    if (!stockText.isEmpty()) {
+                        try {
+                            stock = Integer.parseInt(stockText);
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(this, "Por favor ingrese una cantidad válida", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                    
+                    // Llamar a findByFilters con los campos llenos
+                    productos = controller.findByFilters(nombre.isEmpty() ? null : nombre, precio, stock);
+                }
+            }
+
+            // Mostrar resultados en la tabla (solo si la búsqueda no fue por ID)
+            if (!idText.isEmpty()) {
+                 // Already handled with JOptionPane, do nothing here for table
+            } else if (productos != null && !productos.isEmpty()) {
+                DefaultTableModel model = (DefaultTableModel) tablaProductos.getModel();
+                model.setRowCount(0); // Limpiar la tabla
+                
+                for (Producto producto : productos) {
+                    model.addRow(new Object[]{
+                        producto.getId(),
+                        producto.getNombre(),
+                        producto.getDescripcion(),
+                        producto.getPrecio(),
+                        producto.getStock()
+                    });
+                }
+            } else if (!idText.isEmpty()){
+                 // Handled by JOptionPane above
+            }else {
+                JOptionPane.showMessageDialog(this, "No se encontraron productos con los criterios especificados", "Información", JOptionPane.INFORMATION_MESSAGE);
+                 DefaultTableModel model = (DefaultTableModel) tablaProductos.getModel();
+                 model.setRowCount(0); // Limpiar la tabla si no hay resultados
+            }
+        } catch (IOException | BackendException e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {
         int selectedRow = tablaProductos.getSelectedRow();
@@ -388,8 +510,9 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                     // Eliminar el producto usando el controlador
                     controller.deleteProducto(Long.parseLong(id));
                     
-                    // Eliminar la fila de la tabla
-                    tableModel.removeRow(selectedRow);
+                    // Eliminar la fila de la tabla (usando el modelo actual de la tabla)
+                    DefaultTableModel currentTableModel = (DefaultTableModel) tablaProductos.getModel();
+                    currentTableModel.removeRow(selectedRow);
                     
                     // Mostrar mensaje de éxito
                     JOptionPane.showMessageDialog(
@@ -413,9 +536,11 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE
                     );
                 } catch (NumberFormatException e) {
+                    // Este catch no debería ser alcanzado si el ID se obtiene de la tabla,
+                    // pero por si acaso, mejoramos el mensaje.
                     JOptionPane.showMessageDialog(
                         this,
-                        "Error al eliminar el producto: " + e.getMessage(),
+                        "Error interno: formato de ID inválido.",
                         "Error",
                         JOptionPane.ERROR_MESSAGE
                     );
@@ -482,6 +607,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelProductos;
     private javax.swing.JTable tablaProductos;
+    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPrecio;
