@@ -4,7 +4,7 @@
  */
 package com.project.frontend.SYSTEMproductos.interfaz;
 
-import com.project.frontend.SYSTEMcompras.interfaz.HistorialComprasCliente;
+import com.project.frontend.SYSTEMcompras.interfaz.HistorialComprasAdmin;
 import com.project.frontend.SYSTEMgemini.interfaz.NotificacionesAdmin;
 import com.project.frontend.SYSTEMlogin.data.TokenManager;
 import com.project.frontend.SYSTEMlogin.interfaz.Login;
@@ -406,7 +406,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnCerrarSesion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion1ActionPerformed
-       HistorialComprasCliente cambio = new HistorialComprasCliente();
+       HistorialComprasAdmin cambio = new HistorialComprasAdmin();
        cambio.setVisible(true);
     }//GEN-LAST:event_btnCerrarSesion1ActionPerformed
 

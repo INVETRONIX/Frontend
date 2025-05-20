@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package com.project.frontend.SYSTEMcompras.interfaz;
 
 import java.io.IOException;
@@ -15,11 +19,17 @@ import com.project.frontend.SYSTEMcompras.controller.ControllerCompra;
 import com.project.frontend.SYSTEMcompras.model.Compra;
 import com.project.frontend.core.BackendException;
 
-public class HistorialComprasCliente extends javax.swing.JFrame {
+/**
+ *
+ * @author sebastian
+ */
+public class HistorialComprasAdmin extends javax.swing.JFrame {
     private ControllerCompra controller;
     private DefaultTableModel tableModel;
-    
-    public HistorialComprasCliente() {
+    /**
+     * Creates new form HistorialComprasCliente
+     */
+    public HistorialComprasAdmin() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.controller = new ControllerCompra();
@@ -31,21 +41,30 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al cargar las compras: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }   
 
-        // Configurar listener para selección de filas
+          // Configurar listener para selección de filas
         tablaCompras.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = tablaCompras.getSelectedRow();
                 if (selectedRow != -1) {
-                    // Cargar datos en los campos de texto
+                    btnModificarCompra.setEnabled(true);
+                    btnEliminar.setEnabled(true);
+                    
+                // Cargar datos en los campos de texto
                     txtId.setText(tablaCompras.getValueAt(selectedRow, 0).toString());
                     txtFecha.setText(tablaCompras.getValueAt(selectedRow, 1).toString());
                     txtHora.setText(tablaCompras.getValueAt(selectedRow, 2).toString());
                     txtIdUsuario.setText(tablaCompras.getValueAt(selectedRow, 3).toString());
                 } else {
+                    btnModificarCompra.setEnabled(false);
+                    btnEliminar.setEnabled(false);
                     limpiarCampos();
                 }
             }
         });
+
+        // Inicialmente deshabilitar botones
+        btnModificarCompra.setEnabled(false);
+        btnEliminar.setEnabled(false);
     }
     
     private void llenarTabla() throws IOException {
@@ -80,6 +99,7 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         txtFecha.setText("");
         txtHora.setText("");
         txtIdUsuario.setText("");
+        
     }
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
@@ -212,10 +232,63 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         }
     }
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
-        this.dispose();
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = tablaCompras.getSelectedRow();
+        if (selectedRow != -1) {
+            int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea eliminar esta compra?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                try {
+                    String id = tablaCompras.getValueAt(selectedRow, 0).toString();
+                    controller.deleteCompra(Long.parseLong(id));
+                    
+                    DefaultTableModel currentTableModel = (DefaultTableModel) tablaCompras.getModel();
+                    currentTableModel.removeRow(selectedRow);
+                    
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Compra eliminada exitosamente",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                    
+                    limpiarCampos();
+                    
+                } catch (BackendException | NumberFormatException | IOException e) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error al eliminar la compra: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }
     }
 
+    private void btnModificarCompraActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = tablaCompras.getSelectedRow();
+        if (selectedRow != -1) {
+            String id = tablaCompras.getValueAt(selectedRow, 0).toString();
+            ModificacionCompra ventanaModificar = new ModificacionCompra();
+            ventanaModificar.setIdCompra(Long.parseLong(id));
+            ventanaModificar.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor seleccione una compra para modificar", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -235,6 +308,8 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         txtIdUsuario = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
+        btnModificarCompra = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -242,11 +317,11 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Liberation Sans Narrow", 2, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Historial de Compras");
+        jLabel1.setText("Historial");
 
         jLabel3.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Aquí podrás ver el historial de tus compras");
+        jLabel3.setText("Aqui podrás ver todas tus acciones!!");
 
         tablaCompras.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -256,7 +331,7 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Fecha", "Hora", "Id Usuario", "Producto", "Total"
+                "Id", "IdUsuario", "Hora", "Fecha", "IdProducto", "Total"
             }
         ));
         jScrollPane1.setViewportView(tablaCompras);
@@ -301,6 +376,24 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
             }
         });
 
+        btnEliminar.setBackground(new java.awt.Color(51, 51, 255));
+        btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnModificarCompra.setBackground(new java.awt.Color(51, 51, 255));
+        btnModificarCompra.setForeground(new java.awt.Color(255, 255, 255));
+        btnModificarCompra.setText("Modificar");
+        btnModificarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarCompraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -310,7 +403,10 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel4)
                             .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
@@ -323,7 +419,9 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                         .addGap(41, 41, 41)
                         .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(41, 41, 41)
@@ -346,7 +444,9 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                         .addGap(134, 134, 134)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(40, 40, 40)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -363,7 +463,9 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                         .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(98, 98, 98)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnModificarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(57, 57, 57)
                 .addComponent(btnVolver)
                 .addContainerGap(22, Short.MAX_VALUE))
@@ -385,6 +487,13 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -399,26 +508,28 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HistorialComprasAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HistorialComprasAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HistorialComprasAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HistorialComprasAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new HistorialComprasCliente().setVisible(true);
+                new HistorialComprasAdmin().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificarCompra;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
@@ -434,4 +545,4 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtIdUsuario;
     // End of variables declaration//GEN-END:variables
-} 
+}

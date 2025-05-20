@@ -191,7 +191,7 @@ public class ModificacionCompra extends javax.swing.JFrame {
             
             if (compraActualizada.isPresent()) {
                 JOptionPane.showMessageDialog(this, "Producto de la compra modificado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                HistorialComprasCliente ventanaHistorial = new HistorialComprasCliente();
+                HistorialComprasAdmin ventanaHistorial = new HistorialComprasAdmin();
                 ventanaHistorial.setVisible(true);
                 this.dispose();
             } else {
@@ -203,7 +203,7 @@ public class ModificacionCompra extends javax.swing.JFrame {
     }
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
-        HistorialComprasCliente ventanaHistorial = new HistorialComprasCliente();
+        HistorialComprasAdmin ventanaHistorial = new HistorialComprasAdmin();
         ventanaHistorial.setVisible(true);
         this.dispose();
     }
