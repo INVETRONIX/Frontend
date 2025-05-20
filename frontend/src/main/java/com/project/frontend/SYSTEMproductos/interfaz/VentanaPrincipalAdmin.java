@@ -5,21 +5,52 @@
 package com.project.frontend.SYSTEMproductos.interfaz;
 
 import com.project.frontend.SYSTEMgemini.interfaz.NotificacionesAdmin;
+import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
+import com.project.frontend.SYSTEMproductos.model.Producto;
+import java.io.IOException;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author sebastian
  */
 public class VentanaPrincipalAdmin extends javax.swing.JFrame {
-
+    private ControllerProducto controlador;
     /**
      * Creates new form VentanaPrincipalAdmin
      */
     public VentanaPrincipalAdmin() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.controlador = new ControllerProducto();
+        try {
+            llenarTabla();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
+     private void llenarTabla() throws IOException {
+         DefaultTableModel model = new DefaultTableModel();
+         model.setColumnIdentifiers(new Object[]{"id", "Nombre", "Descripcion", "Precio", "Cantidad en stock"});
+         List<Producto> lista= controlador.getAllProductos();
+         if(lista.isEmpty()){
+             return;
+         }
+         for (int i = 0; i < lista.size(); i++) {
+             model.addRow(new Object[]{
+                lista.get(i).getId(),
+                lista.get(i).getNombre(),
+                lista.get(i).getDescripcion(),
+                lista.get(i).getPrecio(),
+                lista.get(i).getStock()
+             });
+         }
+         
+         tablaProductos.setModel(model);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,7 +66,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         txtBuscar = new javax.swing.JTextField();
         panelProductos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaProductos = new javax.swing.JTable();
         btnAgregarProducto = new javax.swing.JButton();
         btnModificarProducto = new javax.swing.JButton();
         btnNotificaciones = new javax.swing.JButton();
@@ -69,7 +100,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
 
         panelProductos.setBackground(new java.awt.Color(153, 153, 153));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -80,7 +111,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                 "Id", "Nombre", "Descripcion", "Precio", "Cantidad en stock"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaProductos);
 
         javax.swing.GroupLayout panelProductosLayout = new javax.swing.GroupLayout(panelProductos);
         panelProductos.setLayout(panelProductosLayout);
@@ -322,8 +353,8 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JPanel panelProductos;
+    private javax.swing.JTable tablaProductos;
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
