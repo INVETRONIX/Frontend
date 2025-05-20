@@ -177,9 +177,17 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                 
                 if (!horaText.isEmpty()) {
                     try {
-                        hora = LocalTime.parse(horaText, DateTimeFormatter.ofPattern("HH:mm"));
+                        // Asegurar que la hora tenga el formato correcto (HH:mm)
+                        if (!horaText.matches("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")) {
+                            JOptionPane.showMessageDialog(this, "Formato de hora inválido. Use HH:mm (ejemplo: 14:30)", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        // Parsear la hora y asegurar que no tenga segundos ni nanosegundos
+                        hora = LocalTime.parse(horaText, DateTimeFormatter.ofPattern("HH:mm"))
+                                      .withSecond(0)
+                                      .withNano(0);
                     } catch (DateTimeParseException e) {
-                        JOptionPane.showMessageDialog(this, "Formato de hora inválido. Use HH:mm", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Formato de hora inválido. Use HH:mm (ejemplo: 14:30)", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 }

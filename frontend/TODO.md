@@ -1,8 +1,8 @@
 # Tareas pendientes
 
-- [ ] Conexion de compras
+- [ ] Error de buscar por hora
 - [ ] Manejo de excepciones
-- [ ] Añadir el logout(con logica)
+- [ ] Identificar usuario que compra por token
 - [ ] Separar el SYSTEM de compras para el admin
 - [ ] vista principal de cliente
 - [ ] contenerizar back

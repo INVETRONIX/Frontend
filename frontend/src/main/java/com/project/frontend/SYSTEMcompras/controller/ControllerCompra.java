@@ -142,6 +142,8 @@ public class ControllerCompra {
     }
 
     public List<Compra> findByHora(LocalTime hora) throws IOException, BackendException{
+        // Asegurar que la hora esté en formato correcto (sin segundos ni nanosegundos)
+        hora = hora.withSecond(0).withNano(0);
         Response<List<Compra>> response = apiService.findByHora(hora).execute();
         if(response.isSuccessful()){
             return response.body();
