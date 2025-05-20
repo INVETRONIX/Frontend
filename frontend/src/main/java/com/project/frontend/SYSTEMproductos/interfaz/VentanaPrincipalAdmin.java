@@ -7,8 +7,10 @@ package com.project.frontend.SYSTEMproductos.interfaz;
 import com.project.frontend.SYSTEMgemini.interfaz.NotificacionesAdmin;
 import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
 import com.project.frontend.SYSTEMproductos.model.Producto;
+import com.project.frontend.core.BackendException;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,26 +18,62 @@ import javax.swing.table.DefaultTableModel;
  * @author sebastian
  */
 public class VentanaPrincipalAdmin extends javax.swing.JFrame {
-    private ControllerProducto controlador;
+    private ControllerProducto controller;
+    private DefaultTableModel tableModel;
     /**
      * Creates new form VentanaPrincipalAdmin
      */
     public VentanaPrincipalAdmin() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.controlador = new ControllerProducto();
+        this.controller = new ControllerProducto();
+        this.tableModel = (DefaultTableModel) tablaProductos.getModel();
         try {
             llenarTabla();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        // Agregar listener para la selección de filas en la tabla
+        tablaProductos.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = tablaProductos.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Habilitar botones cuando hay una fila seleccionada
+                        btnModificarProducto.setEnabled(true);
+                        btnEliminar.setEnabled(true);
+                        
+                        // Cargar los datos en los campos de texto
+                        txtId.setText(tablaProductos.getValueAt(selectedRow, 0).toString());
+                        txtName.setText(tablaProductos.getValueAt(selectedRow, 1).toString());
+                        txtPrecio.setText(tablaProductos.getValueAt(selectedRow, 3).toString());
+                        txtStock.setText(tablaProductos.getValueAt(selectedRow, 4).toString());
+                    } else {
+                        // Deshabilitar botones cuando no hay fila seleccionada
+                        btnModificarProducto.setEnabled(false);
+                        btnEliminar.setEnabled(false);
+                        
+                        // Limpiar los campos de texto
+                        txtId.setText("");
+                        txtName.setText("");
+                        txtPrecio.setText("");
+                        txtStock.setText("");
+                    }
+                }
+            }
+        });
+        
+        // Inicialmente deshabilitar los botones
+        btnModificarProducto.setEnabled(false);
+        btnEliminar.setEnabled(false);
     }
 
      private void llenarTabla() throws IOException {
          DefaultTableModel model = new DefaultTableModel();
          model.setColumnIdentifiers(new Object[]{"id", "Nombre", "Descripcion", "Precio", "Cantidad en stock"});
-         List<Producto> lista= controlador.getAllProductos();
+         List<Producto> lista= controller.getAllProductos();
          if(lista.isEmpty()){
              return;
          }
@@ -158,7 +196,14 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
             }
         });
 
+        btnEliminar.setBackground(new java.awt.Color(51, 51, 255));
+        btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -286,10 +331,42 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         cambio.setVisible(true);
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
-    private void btnModificarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarProductoActionPerformed
-       ModificarProductoAdmin cambio=new ModificarProductoAdmin();
-       cambio.setVisible(true);
-    }//GEN-LAST:event_btnModificarProductoActionPerformed
+    private void btnModificarProductoActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = tablaProductos.getSelectedRow();
+        if (selectedRow != -1) {
+            try {
+                // Obtener los datos del producto seleccionado
+                String id = tablaProductos.getValueAt(selectedRow, 0).toString();
+                String nombre = tablaProductos.getValueAt(selectedRow, 1).toString();
+                String descripcion = tablaProductos.getValueAt(selectedRow, 2).toString();
+                String precio = tablaProductos.getValueAt(selectedRow, 3).toString();
+                String stock = tablaProductos.getValueAt(selectedRow, 4).toString();
+                
+                // Abrir la ventana de modificación
+                ModificarProductoAdmin modificarVentana = new ModificarProductoAdmin();
+                
+                // Establecer los datos en la ventana de modificación
+                modificarVentana.txtId.setText(id);
+                modificarVentana.txtNombre.setText(nombre);
+                modificarVentana.txtDescripcion.setText(descripcion);
+                modificarVentana.txtPrecio.setText(precio);
+                modificarVentana.txtCantidadEnStock.setText(stock);
+                
+                // Mostrar la ventana de modificación
+                modificarVentana.setVisible(true);
+                
+                // Cerrar esta ventana
+                this.dispose();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Error al abrir la ventana de modificación: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
 
     private void btnRegistrarme2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarme2ActionPerformed
         // TODO add your handling code here:
@@ -303,6 +380,67 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = tablaProductos.getSelectedRow();
+        if (selectedRow != -1) {
+            int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea eliminar este producto?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION
+            );
+            
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                try {
+                    // Obtener el ID del producto seleccionado
+                    String id = tablaProductos.getValueAt(selectedRow, 0).toString();
+                    
+                    // Eliminar el producto usando el controlador
+                    controller.deleteProducto(Long.parseLong(id));
+                    
+                    // Eliminar la fila de la tabla
+                    tableModel.removeRow(selectedRow);
+                    
+                    // Mostrar mensaje de éxito
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Producto eliminado exitosamente",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                    
+                    // Limpiar los campos de texto
+                    txtId.setText("");
+                    txtName.setText("");
+                    txtPrecio.setText("");
+                    txtStock.setText("");
+                    
+                } catch (BackendException e) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error al eliminar el producto: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error al eliminar el producto: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error al eliminar el producto: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }
+    }
 
     /**
      * @param args the command line arguments

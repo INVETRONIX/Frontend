@@ -4,17 +4,33 @@
  */
 package com.project.frontend.SYSTEMproductos.interfaz;
 
+import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
+import com.project.frontend.SYSTEMproductos.model.Producto;
+import com.project.frontend.core.BackendException;
+
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author sebastian
  */
 public class ModificarProductoAdmin extends javax.swing.JFrame {
+    private ControllerProducto controller;
 
     /**
      * Creates new form MOdificarProductoAdmin
      */
     public ModificarProductoAdmin() {
         initComponents();
+        this.controller = new ControllerProducto();
+        // Ocultar el campo de búsqueda y su botón ya que no los necesitamos
+        txtId.setVisible(false);
+        btnBuscar.setVisible(false);
+        jLabel7.setVisible(false);
+        // Hacer que el ID no sea modificable
+        txtId.setEditable(false);
     }
 
     /**
@@ -183,19 +199,51 @@ public class ModificarProductoAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            // Obtener los datos del formulario
+            Long id = Long.parseLong(txtId.getText());
+            String nombre = txtNombre.getText();
+            String descripcion = txtDescripcion.getText();
+            double precio = Double.parseDouble(txtPrecio.getText());
+            int stock = Integer.parseInt(txtCantidadEnStock.getText());
 
-    }//GEN-LAST:event_btnModificarActionPerformed
+            // Crear objeto Producto con los datos actualizados
+            Producto producto = new Producto();
+            producto.setId(id);
+            producto.setNombre(nombre);
+            producto.setDescripcion(descripcion);
+            producto.setPrecio(precio);
+            producto.setStock(stock);
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        VentanaPrincipalAdmin cambio=new VentanaPrincipalAdmin();
-        cambio.setVisible(true);
+            // Actualizar el producto
+            controller.updateProducto(id, producto);
+            
+            JOptionPane.showMessageDialog(this, "Producto modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Volver a la ventana principal
+            VentanaPrincipalAdmin ventanaPrincipal = new VentanaPrincipalAdmin();
+            ventanaPrincipal.setVisible(true);
+            this.dispose();
+            
+        } catch (BackendException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese valores numéricos válidos para precio y stock", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al modificar el producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
+        VentanaPrincipalAdmin ventanaPrincipal = new VentanaPrincipalAdmin();
+        ventanaPrincipal.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnVolverActionPerformed
+    }
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
+    }
 
     /**
      * @param args the command line arguments
@@ -234,7 +282,6 @@ public class ModificarProductoAdmin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
@@ -244,10 +291,11 @@ public class ModificarProductoAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtCantidadEnStock;
-    private javax.swing.JTextField txtDescripcion;
-    private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtPrecio;
+    public javax.swing.JTextField txtCantidadEnStock;
+    public javax.swing.JTextField txtDescripcion;
+    public javax.swing.JTextField txtId;
+    public javax.swing.JTextField txtNombre;
+    public javax.swing.JTextField txtPrecio;
+    private javax.swing.JButton btnBuscar;
     // End of variables declaration//GEN-END:variables
 }
