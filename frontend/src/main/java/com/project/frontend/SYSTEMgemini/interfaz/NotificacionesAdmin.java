@@ -5,6 +5,11 @@
 package com.project.frontend.SYSTEMgemini.interfaz;
 
 import com.project.frontend.SYSTEMproductos.interfaz.VentanaPrincipalAdmin;
+import com.project.frontend.SYSTEMgemini.controller.ControllerGemini;
+import com.project.frontend.SYSTEMgemini.model.GeminiResponse;
+import com.project.frontend.core.BackendException;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,11 +17,14 @@ import com.project.frontend.SYSTEMproductos.interfaz.VentanaPrincipalAdmin;
  */
 public class NotificacionesAdmin extends javax.swing.JFrame {
 
+    private ControllerGemini geminiController;
+
     /**
      * Creates new form NOtificacionesAdmin
      */
     public NotificacionesAdmin() {
         initComponents();
+        this.geminiController = new ControllerGemini();
     }
 
     /**
@@ -118,7 +126,57 @@ public class NotificacionesAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnPredeccirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPredeccirActionPerformed
-        // TODO add your handling code here:
+        try {
+            // Llamar al controlador para obtener el análisis de ventas
+            GeminiResponse response = geminiController.analizarVentas();
+
+            // Mostrar el resultado en un JOptionPane
+            if (response != null && response.getAnalisis() != null) {
+                 String mensaje = "Análisis de Ventas:\n\n" + response.getAnalisis();
+                 if(response.getPrediccion() != null && !response.getPrediccion().isEmpty()){
+                     mensaje += "\n\nPredicciones Futuras:\n\n" + response.getPrediccion();
+                 }
+                 if(response.getRecomendaciones() != null && !response.getRecomendaciones().isEmpty()){
+                     mensaje += "\n\nRecomendaciones para Mejorar:\n\n" + response.getRecomendaciones();
+                 }
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    mensaje,
+                    "Análisis Predictivo de Ventas (Gemini)",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                 JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo obtener el análisis de ventas.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Error de conexión al servidor: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        } catch (BackendException e) {
+             JOptionPane.showMessageDialog(
+                this,
+                "Error del backend: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        } catch (Exception e) { // Captura cualquier otra excepción inesperada
+            JOptionPane.showMessageDialog(
+                this,
+                "Ocurrió un error inesperado: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_btnPredeccirActionPerformed
 
     /**
