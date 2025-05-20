@@ -4,19 +4,83 @@
  */
 package com.project.frontend.SYSTEMcompras.interfaz;
 
-import com.project.frontend.SYSTEMproductos.interfaz.VentanaPrincipalAdmin;
+import com.project.frontend.SYSTEMcompras.controller.ControllerCompra;
+import com.project.frontend.SYSTEMcompras.model.Compra;
+import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
+import com.project.frontend.SYSTEMproductos.model.Producto;
+import com.project.frontend.core.BackendException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author sebastian
  */
 public class ModificacionCompra extends javax.swing.JFrame {
+    private ControllerCompra controllerCompra;
+    private ControllerProducto controllerProducto;
+    private Long idCompra;
+    private Compra compraActual;
+    private List<Producto> productos;
 
     /**
      * Creates new form ModificacionCompra
      */
     public ModificacionCompra() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        this.controllerCompra = new ControllerCompra();
+        this.controllerProducto = new ControllerProducto();
+        cargarProductos();
+    }
+
+    private void cargarProductos() {
+        try {
+            productos = controllerProducto.getAllProductos();
+            DefaultComboBoxModel<Producto> model = new DefaultComboBoxModel<>();
+            for (Producto producto : productos) {
+                model.addElement(producto);
+            }
+            cmbProductos.setModel(model);
+        } catch (IOException | BackendException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void setIdCompra(Long idCompra) {
+        this.idCompra = idCompra;
+        cargarDatosCompra();
+    }
+
+    private void cargarDatosCompra() {
+        try {
+            Optional<Compra> compraOpt = controllerCompra.getCompraById(idCompra);
+            if (compraOpt.isPresent()) {
+                compraActual = compraOpt.get();
+                txtId.setText(String.valueOf(compraActual.getId()));
+                txtPrecio.setText(String.format("$%,.2f", compraActual.getTotal()));
+                
+                // Seleccionar el producto actual en el combo
+                if (compraActual.getProducto() != null) {
+                    for (int i = 0; i < cmbProductos.getItemCount(); i++) {
+                        Producto p = cmbProductos.getItemAt(i);
+                        if (p.getId().equals(compraActual.getProducto().getId())) {
+                            cmbProductos.setSelectedIndex(i);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró la compra", "Error", JOptionPane.ERROR_MESSAGE);
+                this.dispose();
+            }
+        } catch (IOException | BackendException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar la compra: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
     }
 
     /**
@@ -37,6 +101,7 @@ public class ModificacionCompra extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
+        cmbProductos = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -98,13 +163,14 @@ public class ModificacionCompra extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
-                            .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnBuscar)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel7))
-                            .addComponent(btnVolver))
+                            .addComponent(btnVolver)
+                            .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 16, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -118,8 +184,10 @@ public class ModificacionCompra extends javax.swing.JFrame {
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnBuscar)
-                .addGap(55, 55, 55)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmbProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
@@ -143,19 +211,72 @@ public class ModificacionCompra extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            Producto productoSeleccionado = (Producto) cmbProductos.getSelectedItem();
+            if (productoSeleccionado == null) {
+                JOptionPane.showMessageDialog(this, "Por favor seleccione un producto", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-    }//GEN-LAST:event_btnModificarActionPerformed
+            compraActual.setProducto(productoSeleccionado);
+            compraActual.setTotal(productoSeleccionado.getPrecio());
+            
+            Optional<Compra> compraActualizada = controllerCompra.updateCompra(idCompra, compraActual);
+            
+            if (compraActualizada.isPresent()) {
+                JOptionPane.showMessageDialog(this, "Compra modificada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                HistorialComprasCliente ventanaHistorial = new HistorialComprasCliente();
+                ventanaHistorial.setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo modificar la compra", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException | BackendException e) {
+            JOptionPane.showMessageDialog(this, "Error al modificar la compra: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        HistorialComprasCliente cambio=new HistorialComprasCliente();
-        cambio.setVisible(true);
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
+        HistorialComprasCliente ventanaHistorial = new HistorialComprasCliente();
+        ventanaHistorial.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnVolverActionPerformed
+    }
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
+        String idText = txtId.getText().trim();
+        if (idText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese un ID", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Long id = Long.parseLong(idText);
+            Optional<Compra> compraOpt = controllerCompra.getCompraById(id);
+            if (compraOpt.isPresent()) {
+                compraActual = compraOpt.get();
+                idCompra = id;
+                txtPrecio.setText(String.format("$%,.2f", compraActual.getTotal()));
+                
+                // Seleccionar el producto actual en el combo
+                if (compraActual.getProducto() != null) {
+                    for (int i = 0; i < cmbProductos.getItemCount(); i++) {
+                        Producto p = cmbProductos.getItemAt(i);
+                        if (p.getId().equals(compraActual.getProducto().getId())) {
+                            cmbProductos.setSelectedIndex(i);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró la compra", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese un ID válido", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | BackendException e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar la compra: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -196,6 +317,7 @@ public class ModificacionCompra extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnVolver;
+    private javax.swing.JComboBox<Producto> cmbProductos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;

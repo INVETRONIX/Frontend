@@ -39,7 +39,6 @@ public class ControllerCompra {
             .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
             .create();
 
-
         Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
