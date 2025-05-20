@@ -102,7 +102,6 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         btnRegistrarme2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscar = new javax.swing.JTextField();
         panelProductos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaProductos = new javax.swing.JTable();
@@ -239,7 +238,6 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                         .addGap(41, 41, 41)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)                                
                                 .addComponent(btnEliminar))
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))) // Keeping txtBuscar for potential general search, or maybe remove it if not needed?
@@ -273,7 +271,6 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEliminar))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -375,11 +372,6 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         NotificacionesAdmin cambio = new NotificacionesAdmin();
         cambio.setVisible(true);
     }//GEN-LAST:event_btnNotificacionesActionPerformed
-
-    private void cmbFiltroActionPerformed(java.awt.event.ActionEvent evt) {
-        // Limpiar el campo de búsqueda cuando se cambia el tipo de filtro
-        txtBuscar.setText("");
-    }
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
         String idText = txtId.getText().trim();
@@ -607,7 +599,6 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelProductos;
     private javax.swing.JTable tablaProductos;
-    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPrecio;
