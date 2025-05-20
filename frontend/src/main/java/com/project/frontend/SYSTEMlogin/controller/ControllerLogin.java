@@ -27,18 +27,25 @@ public class ControllerLogin {
         handlerErrorResponse = new HandlerErrorResponse();
     }
 
-    public LoginResponse login(LoginRequest loginRequest) throws IOException, BackendException{
-        Response<LoginResponse> response = loginService.login(loginRequest).execute();
-        if(response.isSuccessful()){
-            LoginResponse loginResponse = response.body();
-            if(loginResponse != null && loginResponse.getToken() != null){
-                //Serializo el token en Singleton
-                TokenManager.getInstance().saveToken(loginResponse.getToken());
-                return loginResponse;
+    public LoginResponse login(LoginRequest loginRequest) throws BackendException {
+        try {
+            Response<LoginResponse> response = loginService.login(loginRequest).execute();
+            if(response.isSuccessful()){
+                LoginResponse loginResponse = response.body();
+                if(loginResponse != null && loginResponse.getToken() != null){
+                    //Serializo el token en Singleton
+                    TokenManager.getInstance().saveToken(loginResponse.getToken());
+                    return loginResponse;
+                }
             }
+            handlerErrorResponse.handleErrorResponse(response);
+            return null;
+        } catch (Exception e) {
+            if (e instanceof BackendException) {
+                throw (BackendException) e;
+            }
+            throw new BackendException(500, "Error al conectar con el servidor: " + e.getMessage());
         }
-        handlerErrorResponse.handleErrorResponse(response);
-        return null;
     }
     
 }
