@@ -71,13 +71,13 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Descripcion", "Precio", "Categoria", "Cantidad en stock", "Proveedor"
+                "Id", "Nombre", "Descripcion", "Precio", "Cantidad en stock"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
