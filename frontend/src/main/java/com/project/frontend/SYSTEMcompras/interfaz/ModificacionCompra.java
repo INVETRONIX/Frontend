@@ -60,8 +60,6 @@ public class ModificacionCompra extends javax.swing.JFrame {
             Optional<Compra> compraOpt = controllerCompra.getCompraById(idCompra);
             if (compraOpt.isPresent()) {
                 compraActual = compraOpt.get();
-                txtId.setText(String.valueOf(compraActual.getId()));
-                txtPrecio.setText(String.format("$%,.2f", compraActual.getTotal()));
                 
                 // Seleccionar el producto actual en el combo
                 if (compraActual.getProducto() != null) {
@@ -94,12 +92,8 @@ public class ModificacionCompra extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtPrecio = new javax.swing.JTextField();
         btnModificar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
-        txtId = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         cmbProductos = new javax.swing.JComboBox<>();
 
@@ -109,9 +103,7 @@ public class ModificacionCompra extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Liberation Sans Narrow", 2, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Modificar Compras");
-
-        txtPrecio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jLabel1.setText("Modificar Producto de la Compra");
 
         btnModificar.setBackground(new java.awt.Color(51, 51, 255));
         btnModificar.setForeground(new java.awt.Color(255, 255, 255));
@@ -129,22 +121,9 @@ public class ModificacionCompra extends javax.swing.JFrame {
             }
         });
 
-        txtId.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jLabel7.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("Id");
-
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-
         jLabel9.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel9.setText("Producto");
+        jLabel9.setText("Seleccione el nuevo producto:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -164,13 +143,7 @@ public class ModificacionCompra extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(cmbProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnBuscar)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel7))
-                            .addComponent(btnVolver)
-                            .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnVolver))
                         .addGap(0, 16, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -179,17 +152,9 @@ public class ModificacionCompra extends javax.swing.JFrame {
                 .addGap(40, 40, 40)
                 .addComponent(jLabel1)
                 .addGap(47, 47, 47)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnBuscar)
-                .addGap(18, 18, 18)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cmbProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addComponent(btnVolver)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -225,15 +190,15 @@ public class ModificacionCompra extends javax.swing.JFrame {
             Optional<Compra> compraActualizada = controllerCompra.updateCompra(idCompra, compraActual);
             
             if (compraActualizada.isPresent()) {
-                JOptionPane.showMessageDialog(this, "Compra modificada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Producto de la compra modificado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 HistorialComprasCliente ventanaHistorial = new HistorialComprasCliente();
                 ventanaHistorial.setVisible(true);
                 this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "No se pudo modificar la compra", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No se pudo modificar el producto de la compra", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException | BackendException e) {
-            JOptionPane.showMessageDialog(this, "Error al modificar la compra: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al modificar el producto de la compra: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -241,41 +206,6 @@ public class ModificacionCompra extends javax.swing.JFrame {
         HistorialComprasCliente ventanaHistorial = new HistorialComprasCliente();
         ventanaHistorial.setVisible(true);
         this.dispose();
-    }
-
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {
-        String idText = txtId.getText().trim();
-        if (idText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese un ID", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            Long id = Long.parseLong(idText);
-            Optional<Compra> compraOpt = controllerCompra.getCompraById(id);
-            if (compraOpt.isPresent()) {
-                compraActual = compraOpt.get();
-                idCompra = id;
-                txtPrecio.setText(String.format("$%,.2f", compraActual.getTotal()));
-                
-                // Seleccionar el producto actual en el combo
-                if (compraActual.getProducto() != null) {
-                    for (int i = 0; i < cmbProductos.getItemCount(); i++) {
-                        Producto p = cmbProductos.getItemAt(i);
-                        if (p.getId().equals(compraActual.getProducto().getId())) {
-                            cmbProductos.setSelectedIndex(i);
-                            break;
-                        }
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "No se encontró la compra", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese un ID válido", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException | BackendException e) {
-            JOptionPane.showMessageDialog(this, "Error al buscar la compra: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     /**
@@ -314,15 +244,11 @@ public class ModificacionCompra extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<Producto> cmbProductos;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
 }
