@@ -1,8 +1,19 @@
 package com.project.frontend.SYSTEMcompras.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import com.project.frontend.SYSTEMcompras.model.Compra;
@@ -21,20 +32,53 @@ public class ControllerCompra {
     private final ICompraService apiService;
     private final HandlerErrorResponse handlerErrorResponse;
 
-    public ControllerCompra(){
+    public ControllerCompra() {
+        // Crear adaptadores personalizados para LocalDate y LocalTime
+        Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+            .create();
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new Auth())
-                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build();
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build();
 
         apiService = retrofit.create(ICompraService.class);
         handlerErrorResponse = new HandlerErrorResponse();
+    }
+
+    // Adaptador para LocalDate
+    private static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        @Override
+        public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(formatter.format(src));
+        }
+
+        @Override
+        public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) 
+                throws JsonParseException {
+            return LocalDate.parse(json.getAsString(), formatter);
+        }
+    }
+
+    // Adaptador para LocalTime
+    private static class LocalTimeAdapter implements JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME;
+
+        @Override
+        public JsonElement serialize(LocalTime src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(formatter.format(src));
+        }
+
+        @Override
+        public LocalTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) 
+                throws JsonParseException {
+            return LocalTime.parse(json.getAsString(), formatter);
+        }
     }
 
     public List<Compra> getAllCompras() throws IOException, BackendException{

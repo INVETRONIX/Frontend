@@ -263,40 +263,6 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         }
     }
 
-    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {
-        int selectedRow = tablaCompras.getSelectedRow();
-        if (selectedRow != -1) {
-            try {
-                String id = tablaCompras.getValueAt(selectedRow, 0).toString();
-                String fecha = tablaCompras.getValueAt(selectedRow, 1).toString();
-                String hora = tablaCompras.getValueAt(selectedRow, 2).toString();
-                String idUsuario = tablaCompras.getValueAt(selectedRow, 3).toString();
-                String producto = tablaCompras.getValueAt(selectedRow, 4).toString();
-                String total = tablaCompras.getValueAt(selectedRow, 5).toString();
-                
-                ModificacionCompra modificarVentana = new ModificacionCompra();
-                modificarVentana.txtId.setText(id);
-                modificarVentana.txtFecha.setText(fecha);
-                modificarVentana.txtHora.setText(hora);
-                modificarVentana.txtIdUsuario.setText(idUsuario);
-                modificarVentana.txtProducto.setText(producto);
-                modificarVentana.txtTotal.setText(total);
-                
-                modificarVentana.setVisible(true);
-                this.dispose();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Error al abrir la ventana de modificación: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }
-    }
-
-
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -386,15 +352,6 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
-            }
-        });
-
-        btnModificarCompra.setBackground(new java.awt.Color(51, 51, 255));
-        btnModificarCompra.setForeground(new java.awt.Color(255, 255, 255));
-        btnModificarCompra.setText("Modificar");
-        btnModificarCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarCompraActionPerformed(evt);
             }
         });
 
