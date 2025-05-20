@@ -101,7 +101,6 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         btnRegistrarme2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscar = new javax.swing.JTextField();
         panelProductos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaProductos = new javax.swing.JTable();
@@ -196,14 +195,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
             }
         });
 
-        btnEliminar.setBackground(new java.awt.Color(51, 51, 255));
-        btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
         btnEliminar.setText("Eliminar");
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
-            }
-        });
 
         jLabel4.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -240,8 +232,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                         .addGap(41, 41, 41)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addGap(363, 363, 363)
                                 .addComponent(btnEliminar))
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -273,9 +264,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(jLabel1)
                 .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminar))
+                .addComponent(btnEliminar)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(38, 38, 38)
@@ -493,7 +482,6 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelProductos;
     private javax.swing.JTable tablaProductos;
-    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPrecio;
