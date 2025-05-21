@@ -5,7 +5,8 @@
 package com.project.frontend.SYSTEMproductos.interfaz;
 
 import java.io.IOException;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.*;
 import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
 import com.project.frontend.SYSTEMproductos.model.Producto;
 import com.project.frontend.core.BackendException;
@@ -14,13 +15,24 @@ import com.project.frontend.core.BackendException;
  *
  * @author sebastian
  */
-public class AgregarProductoAdmin extends javax.swing.JFrame {
+public class AgregarProductoAdmin extends JFrame {
     private ControllerProducto controller;
+    private JPanel mainPanel;
+    private JPanel leftPanel;
+    private JPanel rightPanel;
+    private JTextField txtNombre;
+    private JTextField txtDescripcion;
+    private JTextField txtPrecio;
+    private JTextField txtCantidadEnStock;
+    private JButton btnGuardar;
+    private JButton btnVolver;
+
     /**
      * Creates new form AgregarPoductoAdmin1
      */
     public AgregarProductoAdmin() {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.controller = new ControllerProducto();
     }
 
@@ -32,160 +44,198 @@ public class AgregarProductoAdmin extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Agregar Producto");
+        setSize(1000, 650);
+        setResizable(false);
+        setLocationRelativeTo(null);
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        txtDescripcion = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        txtPrecio = new javax.swing.JTextField();
-        btnGuardar = new javax.swing.JButton();
-        txtCantidadEnStock = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        btnVolver = new javax.swing.JButton();
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        // Panel izquierdo (logo y título)
+        leftPanel = new JPanel();
+        leftPanel.setBackground(new Color(0, 122, 255));
+        leftPanel.setPreferredSize(new Dimension(450, 650));
+        leftPanel.setLayout(new BorderLayout());
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(40, 30, 40, 30));
 
-        jPanel1.setBackground(new java.awt.Color(0, 0, 102));
+        JLabel lblLogo = new JLabel("Invetronix");
+        lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        lblLogo.setForeground(Color.WHITE);
+        lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
+        leftPanel.add(lblLogo, BorderLayout.CENTER);
 
-        jLabel1.setFont(new java.awt.Font("Liberation Sans Narrow", 2, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Registro Productos");
+        // Panel derecho (formulario)
+        rightPanel = new JPanel();
+        rightPanel.setBackground(new Color(245, 245, 245));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(60, 60, 60, 60));
 
-        jLabel3.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Nombre");
+        // Título
+        JLabel lblTitulo = new JLabel("Agregar Producto");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        lblTitulo.setForeground(new Color(33, 33, 33));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        txtNombre.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        // Subtítulo
+        JLabel lblSubtitulo = new JLabel("Ingresa los datos del nuevo producto");
+        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        lblSubtitulo.setForeground(new Color(100, 100, 100));
+        lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        jLabel4.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Descripcion");
+        // Campo Nombre
+        JLabel lblNombre = new JLabel("Nombre");
+        lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblNombre.setForeground(new Color(33, 33, 33));
+        lblNombre.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtNombre = new JTextField();
+        txtNombre.setMaximumSize(new Dimension(400, 45));
+        txtNombre.setBackground(Color.WHITE);
+        txtNombre.setForeground(new Color(33, 33, 33));
+        txtNombre.setCaretColor(new Color(0, 122, 255));
+        txtNombre.setSelectedTextColor(Color.WHITE);
+        txtNombre.setSelectionColor(new Color(0, 122, 255));
+        txtNombre.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+        txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        txtDescripcion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        // Campo Descripción
+        JLabel lblDescripcion = new JLabel("Descripción");
+        lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblDescripcion.setForeground(new Color(33, 33, 33));
+        lblDescripcion.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtDescripcion = new JTextField();
+        txtDescripcion.setMaximumSize(new Dimension(400, 45));
+        txtDescripcion.setBackground(Color.WHITE);
+        txtDescripcion.setForeground(new Color(33, 33, 33));
+        txtDescripcion.setCaretColor(new Color(0, 122, 255));
+        txtDescripcion.setSelectedTextColor(Color.WHITE);
+        txtDescripcion.setSelectionColor(new Color(0, 122, 255));
+        txtDescripcion.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+        txtDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        jLabel5.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("Precio");
+        // Campo Precio
+        JLabel lblPrecio = new JLabel("Precio");
+        lblPrecio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblPrecio.setForeground(new Color(33, 33, 33));
+        lblPrecio.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtPrecio = new JTextField();
+        txtPrecio.setMaximumSize(new Dimension(400, 45));
+        txtPrecio.setBackground(Color.WHITE);
+        txtPrecio.setForeground(new Color(33, 33, 33));
+        txtPrecio.setCaretColor(new Color(0, 122, 255));
+        txtPrecio.setSelectedTextColor(Color.WHITE);
+        txtPrecio.setSelectionColor(new Color(0, 122, 255));
+        txtPrecio.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+        txtPrecio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        txtPrecio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        // Campo Cantidad en Stock
+        JLabel lblStock = new JLabel("Cantidad en Stock");
+        lblStock.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblStock.setForeground(new Color(33, 33, 33));
+        lblStock.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtCantidadEnStock = new JTextField();
+        txtCantidadEnStock.setMaximumSize(new Dimension(400, 45));
+        txtCantidadEnStock.setBackground(Color.WHITE);
+        txtCantidadEnStock.setForeground(new Color(33, 33, 33));
+        txtCantidadEnStock.setCaretColor(new Color(0, 122, 255));
+        txtCantidadEnStock.setSelectedTextColor(Color.WHITE);
+        txtCantidadEnStock.setSelectionColor(new Color(0, 122, 255));
+        txtCantidadEnStock.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+        txtCantidadEnStock.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        btnGuardar.setBackground(new java.awt.Color(51, 51, 255));
-        btnGuardar.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar.setText("Guardar");
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
-            }
-        });
+        // Panel de botones
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        buttonsPanel.setBackground(new Color(245, 245, 245));
 
-        txtCantidadEnStock.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnGuardar = new JButton("Guardar Producto");
+        btnGuardar.setPreferredSize(new Dimension(180, 45));
+        btnGuardar.setBackground(new Color(41, 128, 185));
+        btnGuardar.setForeground(Color.BLUE);
+        btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnGuardar.setFocusPainted(false);
+        btnGuardar.setBorderPainted(false);
+        btnGuardar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnGuardar.addActionListener(e -> btnGuardarActionPerformed(null));
 
-        jLabel8.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("Cantidad en stock");
+        btnVolver = new JButton("Volver");
+        btnVolver.setPreferredSize(new Dimension(120, 45));
+        btnVolver.setBackground(new Color(220, 53, 69));
+        btnVolver.setForeground(Color.RED);
+        btnVolver.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnVolver.setFocusPainted(false);
+        btnVolver.setBorderPainted(false);
+        btnVolver.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnVolver.addActionListener(e -> btnVolverActionPerformed(null));
 
-        btnVolver.setText("Volver");
-        btnVolver.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVolverActionPerformed(evt);
-            }
-        });
+        buttonsPanel.add(btnGuardar);
+        buttonsPanel.add(btnVolver);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtCantidadEnStock, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnVolver)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel5)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel3)
-                                .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
-                                .addComponent(txtDescripcion)
-                                .addComponent(txtPrecio)
-                                .addComponent(jLabel1)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jLabel1)
-                .addGap(43, 43, 43)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(61, 61, 61)
-                .addComponent(jLabel8)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCantidadEnStock, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnVolver)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
-                        .addComponent(btnGuardar)
-                        .addGap(64, 64, 64))))
-        );
+        // Agregar componentes al panel derecho
+        rightPanel.add(Box.createVerticalGlue());
+        rightPanel.add(lblTitulo);
+        rightPanel.add(Box.createVerticalStrut(15));
+        rightPanel.add(lblSubtitulo);
+        rightPanel.add(Box.createVerticalStrut(40));
+        rightPanel.add(lblNombre);
+        rightPanel.add(Box.createVerticalStrut(8));
+        rightPanel.add(txtNombre);
+        rightPanel.add(Box.createVerticalStrut(25));
+        rightPanel.add(lblDescripcion);
+        rightPanel.add(Box.createVerticalStrut(8));
+        rightPanel.add(txtDescripcion);
+        rightPanel.add(Box.createVerticalStrut(25));
+        rightPanel.add(lblPrecio);
+        rightPanel.add(Box.createVerticalStrut(8));
+        rightPanel.add(txtPrecio);
+        rightPanel.add(Box.createVerticalStrut(25));
+        rightPanel.add(lblStock);
+        rightPanel.add(Box.createVerticalStrut(8));
+        rightPanel.add(txtCantidadEnStock);
+        rightPanel.add(Box.createVerticalStrut(40));
+        rightPanel.add(buttonsPanel);
+        rightPanel.add(Box.createVerticalGlue());
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        // Agregar paneles al panel principal
+        mainPanel.add(leftPanel, BorderLayout.WEST);
+        mainPanel.add(rightPanel, BorderLayout.CENTER);
 
-        pack();
+        // Agregar panel principal al frame
+        add(mainPanel);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void limpiarCampos(){
+    private void limpiarCampos() {
         txtNombre.setText("");
         txtDescripcion.setText("");
         txtPrecio.setText("");
         txtCantidadEnStock.setText("");
     }
 
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String nombre = txtNombre.getText();
-            String descripcion = txtDescripcion.getText();
-            double precio = Double.parseDouble(txtPrecio.getText());
-            int cantidad = Integer.parseInt(txtCantidadEnStock.getText());
+            String nombre = txtNombre.getText().trim();
+            String descripcion = txtDescripcion.getText().trim();
+            double precio = Double.parseDouble(txtPrecio.getText().trim());
+            int cantidad = Integer.parseInt(txtCantidadEnStock.getText().trim());
 
-            if ((nombre.isEmpty() || nombre.isBlank()) || (descripcion.isEmpty() || descripcion.isBlank()) ) {
-                JOptionPane.showMessageDialog(this, "COmplete todoos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+            if (nombre.isEmpty() || descripcion.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Por favor complete todos los campos", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -196,74 +246,54 @@ public class AgregarProductoAdmin extends javax.swing.JFrame {
             producto.setStock(cantidad);
 
             controller.createProducto(producto);
-            JOptionPane.showMessageDialog(this, "Producto agregado correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                "Producto agregado correctamente", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
 
             limpiarCampos();
+            
+            // Volver a la ventana principal
+            VentanaPrincipalAdmin ventanaPrincipal = new VentanaPrincipalAdmin();
+            ventanaPrincipal.setVisible(true);
+            this.dispose();
+            
         } catch (BackendException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Ingrese valores numericos por favor", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch(NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Por favor ingrese valores numéricos válidos para precio y stock", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al conectar con el servidor", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                "Error al conectar con el servidor", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btnGuardarActionPerformed
+    }
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        VentanaPrincipalAdmin cambio=new VentanaPrincipalAdmin();
-        cambio.setVisible(true);
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
+        VentanaPrincipalAdmin ventanaPrincipal = new VentanaPrincipalAdmin();
+        ventanaPrincipal.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnVolverActionPerformed
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AgregarProductoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AgregarProductoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AgregarProductoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AgregarProductoAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AgregarProductoAdmin().setVisible(true);
-            }
+        EventQueue.invokeLater(() -> {
+            new AgregarProductoAdmin().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnVolver;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtCantidadEnStock;
-    private javax.swing.JTextField txtDescripcion;
-    private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
 }
