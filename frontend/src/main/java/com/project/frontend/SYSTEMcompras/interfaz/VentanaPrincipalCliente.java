@@ -2,25 +2,23 @@ package com.project.frontend.SYSTEMcompras.interfaz;
 
 import com.project.frontend.SYSTEMcompras.controller.ControllerCompra;
 import com.project.frontend.SYSTEMcompras.model.Compra;
-import com.project.frontend.SYSTEMimages.controller.ControllerImages;
 import com.project.frontend.SYSTEMlogin.data.TokenManager;
 import com.project.frontend.SYSTEMlogin.interfaz.Login;
 import com.project.frontend.SYSTEMproductos.controller.ControllerProducto;
 import com.project.frontend.SYSTEMproductos.model.Producto;
 import com.project.frontend.core.BackendException;
+import com.project.frontend.SYSTEMimages.service.ImageService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 public class VentanaPrincipalCliente extends JFrame {
     private ControllerProducto controllerProducto;
     private ControllerCompra controllerCompra;
-    private ControllerImages controllerImages;
+    private ImageService imageService;
     private JPanel panelProductos;
     private JScrollPane scrollPane;
     private JPanel panelBusqueda;
@@ -38,7 +36,7 @@ public class VentanaPrincipalCliente extends JFrame {
         // Inicializamos los controladores
         this.controllerProducto = new ControllerProducto();
         this.controllerCompra = new ControllerCompra();
-        this.controllerImages = new ControllerImages();
+        this.imageService = new ImageService();
 
         // Configuramos la ventana
         this.setTitle("Invetronix - Cliente");
@@ -149,47 +147,22 @@ public class VentanaPrincipalCliente extends JFrame {
 
         // Obtener imagen del producto
         try {
-            String imageUrl = controllerImages.getImage(producto.getNombre());
-            System.out.println("Intentando cargar imagen desde URL: " + imageUrl); // Para depuración
-            
+            String imageUrl = imageService.getImageUrl(producto.getNombre());
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 try {
-                    // Crear un nuevo hilo para cargar la imagen
-                    new Thread(() -> {
-                        try {
-                            ImageIcon icon = new ImageIcon(new java.net.URL(imageUrl));
-                            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                            ImageIcon scaledIcon = new ImageIcon(img);
-                            
-                            // Actualizar la UI en el hilo de eventos
-                            SwingUtilities.invokeLater(() -> {
-                                imagePanel.removeAll();
-                                JLabel imageLabel = new JLabel(scaledIcon);
-                                imageLabel.setPreferredSize(new Dimension(200, 200));
-                                imagePanel.add(imageLabel);
-                                imagePanel.revalidate();
-                                imagePanel.repaint();
-                            });
-                        } catch (Exception e) {
-                            System.err.println("Error al cargar la imagen: " + e.getMessage());
-                            SwingUtilities.invokeLater(() -> {
-                                imagePanel.removeAll();
-                                JLabel errorLabel = new JLabel("Error al cargar imagen");
-                                errorLabel.setPreferredSize(new Dimension(200, 200));
-                                imagePanel.add(errorLabel);
-                                imagePanel.revalidate();
-                                imagePanel.repaint();
-                            });
-                        }
-                    }).start();
+                    ImageIcon icon = new ImageIcon(new java.net.URL(imageUrl));
+                    Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    ImageIcon scaledIcon = new ImageIcon(img);
+                    JLabel imageLabel = new JLabel(scaledIcon);
+                    imageLabel.setPreferredSize(new Dimension(200, 200));
+                    imagePanel.add(imageLabel);
                 } catch (Exception e) {
-                    System.err.println("Error al iniciar la carga de imagen: " + e.getMessage());
+                    System.err.println("Error al cargar la imagen: " + e.getMessage());
                     JLabel errorLabel = new JLabel("Error al cargar imagen");
                     errorLabel.setPreferredSize(new Dimension(200, 200));
                     imagePanel.add(errorLabel);
                 }
             } else {
-                System.out.println("No se encontró imagen para: " + producto.getNombre());
                 JLabel placeholder = new JLabel("Imagen no disponible");
                 placeholder.setPreferredSize(new Dimension(200, 200));
                 imagePanel.add(placeholder);
