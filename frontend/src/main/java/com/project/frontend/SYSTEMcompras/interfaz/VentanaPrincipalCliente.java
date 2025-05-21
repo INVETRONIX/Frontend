@@ -19,11 +19,11 @@ public class VentanaPrincipalCliente extends JFrame {
     private ControllerProducto controllerProducto;
     private ControllerCompra controllerCompra;
     private ImageService imageService;
+    private JPanel mainPanel;
+    private JPanel leftPanel;
+    private JPanel rightPanel;
     private JPanel panelProductos;
     private JScrollPane scrollPane;
-    private JPanel panelBusqueda;
-    private JPanel panelNavegacion;
-    private JPanel panelContenedor;
     private JTextField txtId;
     private JTextField txtName;
     private JTextField txtPrecio;
@@ -33,19 +33,12 @@ public class VentanaPrincipalCliente extends JFrame {
     private JButton btnCerrarSesion;
 
     public VentanaPrincipalCliente() {
-        // Inicializamos los controladores
         this.controllerProducto = new ControllerProducto();
         this.controllerCompra = new ControllerCompra();
         this.imageService = new ImageService();
-
-        // Configuramos la ventana
-        this.setTitle("Invetronix - Cliente");
-        this.setSize(1000, 800);
-        this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // Inicializamos los componentes
-        inicializarComponentes();
+        initComponents();
+        this.setLocationRelativeTo(null);
         
         try {
             cargarProductos();
@@ -54,58 +47,132 @@ public class VentanaPrincipalCliente extends JFrame {
         }
     }
 
-    private void inicializarComponentes() {
-        // Panel principal
-        panelContenedor = new JPanel(new BorderLayout());
-        panelContenedor.setBackground(new Color(153, 153, 153));
-        
+    private void initComponents() {
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Invetronix - Cliente");
+        setSize(1200, 800);
+        setResizable(false);
+        setLocationRelativeTo(null);
+
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
+
+        // Panel izquierdo (logo y navegación)
+        leftPanel = new JPanel();
+        leftPanel.setBackground(new Color(0, 122, 255));
+        leftPanel.setPreferredSize(new Dimension(320, 800));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(40, 30, 40, 30));
+
+        JLabel lblLogo = new JLabel("Invetronix");
+        lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        lblLogo.setForeground(Color.WHITE);
+        lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftPanel.add(lblLogo);
+        leftPanel.add(Box.createVerticalStrut(40));
+
+        btnHistorial = new JButton("Ver Historial");
+        btnHistorial.setMaximumSize(new Dimension(260, 45));
+        btnHistorial.setBackground(new Color(41, 128, 185));
+        btnHistorial.setForeground(Color.WHITE);
+        btnHistorial.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnHistorial.setFocusPainted(false);
+        btnHistorial.setBorderPainted(false);
+        btnHistorial.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnHistorial.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnHistorial.addActionListener(e -> btnHistorialActionPerformed(e));
+        leftPanel.add(btnHistorial);
+        leftPanel.add(Box.createVerticalStrut(20));
+
+        btnCerrarSesion = new JButton("Cerrar Sesión");
+        btnCerrarSesion.setMaximumSize(new Dimension(260, 45));
+        btnCerrarSesion.setBackground(new Color(220, 53, 69));
+        btnCerrarSesion.setForeground(Color.WHITE);
+        btnCerrarSesion.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnCerrarSesion.setFocusPainted(false);
+        btnCerrarSesion.setBorderPainted(false);
+        btnCerrarSesion.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCerrarSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCerrarSesion.addActionListener(e -> btnCerrarSesionActionPerformed(e));
+        leftPanel.add(btnCerrarSesion);
+        leftPanel.add(Box.createVerticalGlue());
+
+        // Panel derecho (productos y búsqueda)
+        rightPanel = new JPanel();
+        rightPanel.setBackground(new Color(245, 245, 245));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+
+        // Título
+        JLabel lblTitulo = new JLabel("Catálogo de Productos");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(33, 33, 33));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(lblTitulo);
+        rightPanel.add(Box.createVerticalStrut(20));
+
         // Panel de búsqueda
-        panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelBusqueda.setBackground(new Color(153, 153, 153));
-        
-        txtId = new JTextField(5);
-        txtName = new JTextField(10);
-        txtPrecio = new JTextField(5);
-        txtStock = new JTextField(5);
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new GridLayout(2, 4, 15, 15));
+        searchPanel.setBackground(new Color(245, 245, 245));
+        searchPanel.setMaximumSize(new Dimension(800, 120));
+        searchPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Campos de búsqueda
+        txtId = createSearchField("ID");
+        txtName = createSearchField("Nombre");
+        txtPrecio = createSearchField("Precio");
+        txtStock = createSearchField("Stock");
+
+        searchPanel.add(txtId);
+        searchPanel.add(txtName);
+        searchPanel.add(txtPrecio);
+        searchPanel.add(txtStock);
+
         btnBuscar = new JButton("Buscar");
-        
-        panelBusqueda.add(new JLabel("ID:"));
-        panelBusqueda.add(txtId);
-        panelBusqueda.add(new JLabel("Nombre:"));
-        panelBusqueda.add(txtName);
-        panelBusqueda.add(new JLabel("Precio:"));
-        panelBusqueda.add(txtPrecio);
-        panelBusqueda.add(new JLabel("Stock:"));
-        panelBusqueda.add(txtStock);
-        panelBusqueda.add(btnBuscar);
-        
+        btnBuscar.setPreferredSize(new Dimension(150, 40));
+        btnBuscar.setBackground(new Color(41, 128, 185));
+        btnBuscar.setForeground(Color.BLUE);
+        btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnBuscar.setFocusPainted(false);
+        btnBuscar.setBorderPainted(false);
+        btnBuscar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnBuscar.addActionListener(e -> btnBuscarActionPerformed(e));
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(new Color(245, 245, 245));
+        buttonPanel.add(btnBuscar);
+        searchPanel.add(buttonPanel);
+
+        rightPanel.add(searchPanel);
+        rightPanel.add(Box.createVerticalStrut(20));
+
         // Panel de productos
-        panelProductos = new JPanel(new GridLayout(0, 3, 10, 10));
+        panelProductos = new JPanel(new GridLayout(0, 3, 20, 20));
+        panelProductos.setBackground(new Color(245, 245, 245));
+        
         scrollPane = new JScrollPane(panelProductos);
         scrollPane.setPreferredSize(new Dimension(800, 500));
+        scrollPane.setMaximumSize(new Dimension(800, 500));
+        scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         
-        // Panel de navegación
-        panelNavegacion = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelNavegacion.setBackground(new Color(153, 153, 153));
-        
-        btnHistorial = new JButton("Ver Historial");
-        btnCerrarSesion = new JButton("Cerrar Sesión");
-        
-        panelNavegacion.add(btnHistorial);
-        panelNavegacion.add(btnCerrarSesion);
-        
-        // Agregamos los paneles al contenedor principal
-        panelContenedor.add(panelBusqueda, BorderLayout.NORTH);
-        panelContenedor.add(scrollPane, BorderLayout.CENTER);
-        panelContenedor.add(panelNavegacion, BorderLayout.SOUTH);
-        
-        // Agregamos el panel contenedor a la ventana
-        this.add(panelContenedor);
-        
-        // Configuramos los listeners
-        btnBuscar.addActionListener(e -> btnBuscarActionPerformed(e));
-        btnHistorial.addActionListener(e -> btnHistorialActionPerformed(e));
-        btnCerrarSesion.addActionListener(e -> btnCerrarSesionActionPerformed(e));
+        rightPanel.add(scrollPane);
+        rightPanel.add(Box.createVerticalGlue());
+
+        mainPanel.add(leftPanel, BorderLayout.WEST);
+        mainPanel.add(rightPanel, BorderLayout.CENTER);
+        add(mainPanel);
+    }
+
+    private JTextField createSearchField(String placeholder) {
+        JTextField field = new JTextField();
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(placeholder),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        return field;
     }
 
     private void cargarProductos() throws IOException {
@@ -126,22 +193,23 @@ public class VentanaPrincipalCliente extends JFrame {
             panelProductos.repaint();
         } catch (BackendException e) {
             JOptionPane.showMessageDialog(this, "Error al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(); // Para depuración
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error inesperado al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(); // Para depuración
         }
     }
 
     private JPanel crearCardProducto(Producto producto) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        card.setPreferredSize(new Dimension(250, 350));
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
+        card.setPreferredSize(new Dimension(250, 400));
 
         // Panel para la imagen
         JPanel imagePanel = new JPanel();
         imagePanel.setPreferredSize(new Dimension(200, 200));
+        imagePanel.setBackground(Color.WHITE);
         imagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(imagePanel);
 
@@ -159,36 +227,69 @@ public class VentanaPrincipalCliente extends JFrame {
                 } catch (Exception e) {
                     System.err.println("Error al cargar la imagen: " + e.getMessage());
                     JLabel errorLabel = new JLabel("Error al cargar imagen");
-                    errorLabel.setPreferredSize(new Dimension(200, 200));
+                    errorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                    errorLabel.setForeground(new Color(150, 150, 150));
                     imagePanel.add(errorLabel);
                 }
             } else {
                 JLabel placeholder = new JLabel("Imagen no disponible");
-                placeholder.setPreferredSize(new Dimension(200, 200));
+                placeholder.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                placeholder.setForeground(new Color(150, 150, 150));
                 imagePanel.add(placeholder);
             }
         } catch (Exception e) {
             System.err.println("Error al obtener la URL de la imagen: " + e.getMessage());
             JLabel errorLabel = new JLabel("Error al cargar imagen");
-            errorLabel.setPreferredSize(new Dimension(200, 200));
+            errorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            errorLabel.setForeground(new Color(150, 150, 150));
             imagePanel.add(errorLabel);
         }
 
+        card.add(Box.createVerticalStrut(15));
+
         // Información del producto
         JLabel nombreLabel = new JLabel(producto.getNombre());
+        nombreLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        nombreLabel.setForeground(new Color(33, 33, 33));
         nombreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(nombreLabel);
 
+        card.add(Box.createVerticalStrut(10));
+
+        // Agregar ID del producto
+        JLabel idLabel = new JLabel("ID: " + producto.getId());
+        idLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        idLabel.setForeground(new Color(100, 100, 100));
+        idLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(idLabel);
+
+        card.add(Box.createVerticalStrut(10));
+
         JLabel precioLabel = new JLabel(String.format("$%,.2f", producto.getPrecio()));
+        precioLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        precioLabel.setForeground(new Color(41, 128, 185));
         precioLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(precioLabel);
 
+        card.add(Box.createVerticalStrut(10));
+
         JLabel stockLabel = new JLabel("Stock: " + producto.getStock());
+        stockLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        stockLabel.setForeground(new Color(100, 100, 100));
         stockLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(stockLabel);
 
+        card.add(Box.createVerticalStrut(15));
+
         // Botón de compra
         JButton btnComprar = new JButton("Comprar");
+        btnComprar.setPreferredSize(new Dimension(150, 40));
+        btnComprar.setBackground(new Color(41, 128, 185));
+        btnComprar.setForeground(Color.RED);
+        btnComprar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnComprar.setFocusPainted(false);
+        btnComprar.setBorderPainted(false);
+        btnComprar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnComprar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnComprar.addActionListener(e -> realizarCompra(producto));
         card.add(btnComprar);
@@ -317,12 +418,12 @@ public class VentanaPrincipalCliente extends JFrame {
         historial.setVisible(true);
         this.dispose();
     }
-
+ 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {
         Login login = new Login();
         login.setVisible(true);
         this.dispose();
-        TokenManager.getInstance().saveToken(null);
+        TokenManager.getInstance().clearToken();
     }
 
     public static void main(String args[]) {

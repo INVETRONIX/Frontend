@@ -319,9 +319,6 @@ public class VentanaPrincipalAdmin extends JFrame {
         }
     }
 
-    private void btnRegistrarme2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarme2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRegistrarme2ActionPerformed
 
     private void btnNotificacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificacionesActionPerformed
         NotificacionesAdmin cambio = new NotificacionesAdmin();
