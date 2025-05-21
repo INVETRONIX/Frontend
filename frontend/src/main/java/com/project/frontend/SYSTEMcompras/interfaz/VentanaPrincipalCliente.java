@@ -141,22 +141,64 @@ public class VentanaPrincipalCliente extends JFrame {
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         card.setPreferredSize(new Dimension(250, 350));
 
+        // Panel para la imagen
+        JPanel imagePanel = new JPanel();
+        imagePanel.setPreferredSize(new Dimension(200, 200));
+        imagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(imagePanel);
+
         // Obtener imagen del producto
         try {
             String imageUrl = controllerImages.getImage(producto.getNombre());
-            if (imageUrl != null) {
-                ImageIcon icon = new ImageIcon(new java.net.URL(imageUrl));
-                Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                JLabel imageLabel = new JLabel(new ImageIcon(img));
-                imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                card.add(imageLabel);
+            System.out.println("Intentando cargar imagen desde URL: " + imageUrl); // Para depuración
+            
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                try {
+                    // Crear un nuevo hilo para cargar la imagen
+                    new Thread(() -> {
+                        try {
+                            ImageIcon icon = new ImageIcon(new java.net.URL(imageUrl));
+                            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                            ImageIcon scaledIcon = new ImageIcon(img);
+                            
+                            // Actualizar la UI en el hilo de eventos
+                            SwingUtilities.invokeLater(() -> {
+                                imagePanel.removeAll();
+                                JLabel imageLabel = new JLabel(scaledIcon);
+                                imageLabel.setPreferredSize(new Dimension(200, 200));
+                                imagePanel.add(imageLabel);
+                                imagePanel.revalidate();
+                                imagePanel.repaint();
+                            });
+                        } catch (Exception e) {
+                            System.err.println("Error al cargar la imagen: " + e.getMessage());
+                            SwingUtilities.invokeLater(() -> {
+                                imagePanel.removeAll();
+                                JLabel errorLabel = new JLabel("Error al cargar imagen");
+                                errorLabel.setPreferredSize(new Dimension(200, 200));
+                                imagePanel.add(errorLabel);
+                                imagePanel.revalidate();
+                                imagePanel.repaint();
+                            });
+                        }
+                    }).start();
+                } catch (Exception e) {
+                    System.err.println("Error al iniciar la carga de imagen: " + e.getMessage());
+                    JLabel errorLabel = new JLabel("Error al cargar imagen");
+                    errorLabel.setPreferredSize(new Dimension(200, 200));
+                    imagePanel.add(errorLabel);
+                }
+            } else {
+                System.out.println("No se encontró imagen para: " + producto.getNombre());
+                JLabel placeholder = new JLabel("Imagen no disponible");
+                placeholder.setPreferredSize(new Dimension(200, 200));
+                imagePanel.add(placeholder);
             }
         } catch (Exception e) {
-            // Si hay error al cargar la imagen, mostrar un placeholder
-            JLabel placeholder = new JLabel("Imagen no disponible");
-            placeholder.setPreferredSize(new Dimension(200, 200));
-            placeholder.setAlignmentX(Component.CENTER_ALIGNMENT);
-            card.add(placeholder);
+            System.err.println("Error al obtener la URL de la imagen: " + e.getMessage());
+            JLabel errorLabel = new JLabel("Error al cargar imagen");
+            errorLabel.setPreferredSize(new Dimension(200, 200));
+            imagePanel.add(errorLabel);
         }
 
         // Información del producto
