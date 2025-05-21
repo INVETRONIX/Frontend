@@ -5,7 +5,8 @@ import com.project.frontend.SYSTEMgemini.model.GeminiResponse;
 import com.project.frontend.SYSTEMgemini.service.IGeminiService;
 import com.project.frontend.core.BackendException;
 import com.project.frontend.core.HandlerErrorResponse;
-import com.project.frontend.core.tokenManager.Auth;
+import com.project.frontend.core.interceptorToken.Auth;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
 import retrofit2.Retrofit;

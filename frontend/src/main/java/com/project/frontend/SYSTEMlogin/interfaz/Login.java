@@ -5,6 +5,7 @@
 package com.project.frontend.SYSTEMlogin.interfaz;
 
 import javax.swing.JOptionPane;
+import com.project.frontend.SYSTEMcompras.interfaz.VentanaPrincipalCliente;
 import com.project.frontend.SYSTEMlogin.controller.ControllerLogin;
 import com.project.frontend.SYSTEMlogin.data.TokenManager;
 import com.project.frontend.SYSTEMlogin.model.LoginRequest;
@@ -182,8 +183,9 @@ public class Login extends javax.swing.JFrame {
                     cambio.setVisible(true);
                     this.dispose();
                 } else if ("CLIENTE".equals(userRole)) {
-                    // Crear ventana para cliente
-                    System.out.println("Bienvenido a la ventana del cliente");
+                    VentanaPrincipalCliente cambio = new VentanaPrincipalCliente();
+                    cambio.setVisible(true);
+                    this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Rol de usuario no reconocido: " + userRole, "Error", JOptionPane.ERROR_MESSAGE);
                 }

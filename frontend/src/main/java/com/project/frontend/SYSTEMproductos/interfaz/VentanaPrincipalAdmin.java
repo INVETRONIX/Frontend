@@ -407,7 +407,7 @@ public class VentanaPrincipalAdmin extends javax.swing.JFrame {
         Login cambio = new Login();
         cambio.setVisible(true);
         this.dispose();
-        TokenManager.getInstance().saveToken(null);
+        TokenManager.getInstance().clearToken();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnCerrarSesion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion1ActionPerformed

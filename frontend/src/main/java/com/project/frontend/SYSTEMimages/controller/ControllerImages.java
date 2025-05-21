@@ -8,12 +8,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ControllerService {
+public class ControllerImages {
     private static final String BASE_URL= "http://localhost:8080";
     private final IServiceImages serviceImages;
     private final HandlerErrorResponse handlerErrorResponse;
 
-    public ControllerService(){
+    public ControllerImages(){
         Retrofit retrofit = new Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())

@@ -1,4 +1,4 @@
-package com.project.frontend.core.tokenManager;
+package com.project.frontend.core.interceptorToken;
 
 import java.io.IOException;
 

@@ -28,13 +28,13 @@ public interface IProductoService {
     @GET("/api/productos")
     Call<List<Producto>> getAllProductos();
 
-    @GET("/api/productos/nombre")
+    @GET("/api/productos/buscar/nombre")
     Call<List<Producto>> findByNombre(@Query("nombre") String nombre);
 
-    @GET("/api/productos/precio")
+    @GET("/api/productos/buscar/precio")
     Call<List<Producto>> findByPrecio(@Query("precio") Double precio);
 
-    @GET("/api/productos/stock")
+    @GET("/api/productos/buscar/stock")
     Call<List<Producto>> findByStock(@Query("stock") Integer stock);
 
     @GET("/api/productos/buscar")

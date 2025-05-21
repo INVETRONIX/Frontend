@@ -4,8 +4,7 @@ import com.project.frontend.SYSTEMproductos.model.Producto;
 import com.project.frontend.SYSTEMproductos.service.IProductoService;
 import com.project.frontend.core.BackendException;
 import com.project.frontend.core.HandlerErrorResponse;
-import com.project.frontend.core.tokenManager.Auth;
-
+import com.project.frontend.core.interceptorToken.Auth;
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -17,14 +16,16 @@ import java.util.Optional;
 public class ControllerProducto {
     private static final String BASE_URL = "http://localhost:8080";
     private final IProductoService apiService;
+    private final IProductoService publicApiService;
     private final HandlerErrorResponse handlerErrorResponse;
 
     public ControllerProducto(){
-
+        // Cliente con autenticación
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new Auth())
                 .build();
 
+        // Retrofit sin autenticación
         Retrofit retrofit = new Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(client)
@@ -32,11 +33,12 @@ public class ControllerProducto {
         .build();
 
         apiService = retrofit.create(IProductoService.class);
+        publicApiService = retrofit.create(IProductoService.class);
         handlerErrorResponse = new HandlerErrorResponse();
     }
 
     public List<Producto> getAllProductos() throws IOException, BackendException{
-        Response<List<Producto>> response = apiService.getAllProductos().execute();
+        Response<List<Producto>> response = publicApiService.getAllProductos().execute();
         if(response.isSuccessful()){
             return response.body();
         }
