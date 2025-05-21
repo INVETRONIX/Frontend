@@ -1,8 +1,0 @@
-ventana de registro aqui
-
-txtNombre
-txtCorreo
-txtContrasena
-txtEdad
-btnRegistrarse
-btnLogin

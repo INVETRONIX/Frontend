@@ -7,17 +7,22 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
-
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import com.project.frontend.SYSTEMcompras.controller.ControllerCompra;
 import com.project.frontend.SYSTEMcompras.model.Compra;
 import com.project.frontend.core.BackendException;
+import java.awt.*;
 
-public class HistorialComprasCliente extends javax.swing.JFrame {
+public class HistorialComprasCliente extends JFrame {
     private ControllerCompra controller;
     private DefaultTableModel tableModel;
+    private JPanel mainPanel;
+    private JPanel leftPanel;
+    private JPanel rightPanel;
+    private JTable tablaCompras;
+    private JTextField txtId, txtFecha, txtHora, txtIdUsuario;
+    private JButton btnBuscar, btnVolver;
     
     public HistorialComprasCliente() {
         initComponents();
@@ -36,7 +41,6 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = tablaCompras.getSelectedRow();
                 if (selectedRow != -1) {
-                    // Cargar datos en los campos de texto
                     txtId.setText(tablaCompras.getValueAt(selectedRow, 0).toString());
                     txtFecha.setText(tablaCompras.getValueAt(selectedRow, 1).toString());
                     txtHora.setText(tablaCompras.getValueAt(selectedRow, 2).toString());
@@ -48,6 +52,211 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         });
     }
     
+    private void initComponents() {
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Historial de Compras");
+        setSize(1200, 700);
+        setResizable(false);
+        setLocationRelativeTo(null);
+
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
+
+        // Panel izquierdo (logo y navegación)
+        leftPanel = new JPanel();
+        leftPanel.setBackground(new Color(0, 122, 255));
+        leftPanel.setPreferredSize(new Dimension(400, 700));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+
+        JLabel lblLogo = new JLabel("Invetronix");
+        lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        lblLogo.setForeground(Color.WHITE);
+        lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftPanel.add(lblLogo);
+        leftPanel.add(Box.createVerticalStrut(40));
+
+        // Panel de filtros
+        JPanel filtersPanel = new JPanel();
+        filtersPanel.setLayout(new BoxLayout(filtersPanel, BoxLayout.Y_AXIS));
+        filtersPanel.setBackground(new Color(0, 122, 255));
+        filtersPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        filtersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Título de filtros
+        JLabel lblFiltrosTitulo = new JLabel("Filtros de Búsqueda");
+        lblFiltrosTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblFiltrosTitulo.setForeground(Color.WHITE);
+        lblFiltrosTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        filtersPanel.add(lblFiltrosTitulo);
+        filtersPanel.add(Box.createVerticalStrut(30));
+
+        // Panel para ID
+        JPanel idPanel = new JPanel();
+        idPanel.setLayout(new BoxLayout(idPanel, BoxLayout.Y_AXIS));
+        idPanel.setBackground(new Color(0, 122, 255));
+        idPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel lblId = new JLabel("ID de Compra");
+        lblId.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblId.setForeground(Color.WHITE);
+        lblId.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtId = createTextField("Ejemplo: 123");
+        idPanel.add(lblId);
+        idPanel.add(Box.createVerticalStrut(7));
+        idPanel.add(txtId);
+        filtersPanel.add(idPanel);
+        filtersPanel.add(Box.createVerticalStrut(18));
+
+        // Panel para Fecha
+        JPanel fechaPanel = new JPanel();
+        fechaPanel.setLayout(new BoxLayout(fechaPanel, BoxLayout.Y_AXIS));
+        fechaPanel.setBackground(new Color(0, 122, 255));
+        fechaPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel lblFecha = new JLabel("Fecha");
+        lblFecha.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblFecha.setForeground(Color.WHITE);
+        lblFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtFecha = createTextField("Formato: dd/MM/yyyy");
+        fechaPanel.add(lblFecha);
+        fechaPanel.add(Box.createVerticalStrut(7));
+        fechaPanel.add(txtFecha);
+        filtersPanel.add(fechaPanel);
+        filtersPanel.add(Box.createVerticalStrut(18));
+
+        // Panel para Hora
+        JPanel horaPanel = new JPanel();
+        horaPanel.setLayout(new BoxLayout(horaPanel, BoxLayout.Y_AXIS));
+        horaPanel.setBackground(new Color(0, 122, 255));
+        horaPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel lblHora = new JLabel("Hora");
+        lblHora.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblHora.setForeground(Color.WHITE);
+        lblHora.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtHora = createTextField("Formato: HH:mm (ejemplo: 14:30)");
+        horaPanel.add(lblHora);
+        horaPanel.add(Box.createVerticalStrut(7));
+        horaPanel.add(txtHora);
+        filtersPanel.add(horaPanel);
+        filtersPanel.add(Box.createVerticalStrut(18));
+
+        // Panel para ID Usuario
+        JPanel usuarioPanel = new JPanel();
+        usuarioPanel.setLayout(new BoxLayout(usuarioPanel, BoxLayout.Y_AXIS));
+        usuarioPanel.setBackground(new Color(0, 122, 255));
+        usuarioPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel lblUsuario = new JLabel("ID de Usuario");
+        lblUsuario.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblUsuario.setForeground(Color.WHITE);
+        lblUsuario.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtIdUsuario = createTextField("Ejemplo: 456");
+        usuarioPanel.add(lblUsuario);
+        usuarioPanel.add(Box.createVerticalStrut(7));
+        usuarioPanel.add(txtIdUsuario);
+        filtersPanel.add(usuarioPanel);
+        filtersPanel.add(Box.createVerticalStrut(30));
+
+        // Botón de búsqueda
+        btnBuscar = new JButton("Buscar");
+        btnBuscar.setMaximumSize(new Dimension(300, 45));
+        btnBuscar.setBackground(new Color(41, 128, 185));
+        btnBuscar.setForeground(Color.BLUE);
+        btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        btnBuscar.setFocusPainted(false);
+        btnBuscar.setBorderPainted(false);
+        btnBuscar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnBuscar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnBuscar.addActionListener(e -> btnBuscarActionPerformed(null));
+        filtersPanel.add(btnBuscar);
+        filtersPanel.add(Box.createVerticalStrut(25));
+
+        // Botón volver
+        btnVolver = new JButton("Volver");
+        btnVolver.setMaximumSize(new Dimension(300, 45));
+        btnVolver.setBackground(new Color(220, 53, 69));
+        btnVolver.setForeground(Color.RED);
+        btnVolver.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        btnVolver.setFocusPainted(false);
+        btnVolver.setBorderPainted(false);
+        btnVolver.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnVolver.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnVolver.addActionListener(e -> btnVolverActionPerformed(null));
+        filtersPanel.add(btnVolver);
+        filtersPanel.add(Box.createVerticalGlue());
+
+        leftPanel.add(filtersPanel);
+        leftPanel.add(Box.createVerticalGlue());
+
+        // Panel derecho (tabla de compras)
+        rightPanel = new JPanel();
+        rightPanel.setBackground(new Color(245, 245, 245));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+
+        // Título
+        JLabel lblTitulo = new JLabel("Historial de Compras");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(33, 33, 33));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Subtítulo
+        JLabel lblSubtitulo = new JLabel("Consulta el historial de tus compras");
+        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        lblSubtitulo.setForeground(new Color(100, 100, 100));
+        lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Tabla de compras
+        String[] columnNames = {"ID", "Fecha", "Hora", "ID Usuario", "Producto", "Total"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        tablaCompras = new JTable(tableModel);
+        tablaCompras.setRowHeight(28);
+        tablaCompras.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tablaCompras.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tablaCompras.setSelectionBackground(new Color(0, 122, 255));
+        tablaCompras.setSelectionForeground(Color.WHITE);
+        JScrollPane scrollPane = new JScrollPane(tablaCompras);
+        scrollPane.setPreferredSize(new Dimension(700, 400));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        rightPanel.add(lblTitulo);
+        rightPanel.add(Box.createVerticalStrut(10));
+        rightPanel.add(lblSubtitulo);
+        rightPanel.add(Box.createVerticalStrut(30));
+        rightPanel.add(scrollPane);
+        rightPanel.add(Box.createVerticalGlue());
+
+        mainPanel.add(leftPanel, BorderLayout.WEST);
+        mainPanel.add(rightPanel, BorderLayout.CENTER);
+        add(mainPanel);
+    }
+
+    private JTextField createTextField(String placeholder) {
+        JTextField textField = new JTextField();
+        Dimension size = new Dimension(300, 40);
+        textField.setPreferredSize(size);
+        textField.setMaximumSize(size);
+        textField.setMinimumSize(size);
+        textField.setBackground(Color.WHITE);
+        textField.setForeground(new Color(33, 33, 33));
+        textField.setCaretColor(new Color(0, 122, 255));
+        textField.setSelectedTextColor(Color.WHITE);
+        textField.setSelectionColor(new Color(0, 122, 255));
+        textField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+        textField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        textField.putClientProperty("JTextField.placeholderText", placeholder);
+        return textField;
+    }
+
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        label.setForeground(Color.WHITE);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return label;
+    }
+
     private void llenarTabla() throws IOException {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(new Object[]{"ID", "Fecha", "Hora", "ID Usuario", "Producto", "Total"});
@@ -88,7 +297,6 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         String horaText = txtHora.getText().trim();
         String idUsuarioText = txtIdUsuario.getText().trim();
         
-        // Si todos los campos están vacíos, recargar tabla completa
         if (idText.isEmpty() && fechaText.isEmpty() && horaText.isEmpty() && idUsuarioText.isEmpty()) {
             try {
                 llenarTabla();
@@ -101,7 +309,6 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         try {
             List<Compra> compras = null;
             
-            // Prioridad: buscar por ID si está lleno
             if (!idText.isEmpty()) {
                 try {
                     Long id = Long.parseLong(idText);
@@ -141,7 +348,6 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                     return;
                 }
             } else {
-                // Buscar por otros filtros
                 LocalDate fecha = null;
                 LocalTime hora = null;
                 Long idUsuario = null;
@@ -157,12 +363,10 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                 
                 if (!horaText.isEmpty()) {
                     try {
-                        // Asegurar que la hora tenga el formato correcto (HH:mm)
                         if (!horaText.matches("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")) {
                             JOptionPane.showMessageDialog(this, "Formato de hora inválido. Use HH:mm (ejemplo: 14:30)", "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        // Parsear la hora y asegurar que no tenga segundos ni nanosegundos
                         hora = LocalTime.parse(horaText, DateTimeFormatter.ofPattern("HH:mm"))
                                       .withSecond(0)
                                       .withNano(0);
@@ -184,10 +388,9 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
                 compras = controller.findByFilters(fecha, idUsuario, hora);
             }
             
-            // Mostrar resultados en la tabla
             if (compras != null && !compras.isEmpty()) {
                 DefaultTableModel model = (DefaultTableModel) tablaCompras.getModel();
-                model.setRowCount(0); // Limpiar tabla
+                model.setRowCount(0);
                 
                 DateTimeFormatter fechaFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -205,7 +408,7 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(this, "No se encontraron compras con los criterios especificados", "Información", JOptionPane.INFORMATION_MESSAGE);
                 DefaultTableModel model = (DefaultTableModel) tablaCompras.getModel();
-                model.setRowCount(0); // Limpiar tabla si no hay resultados
+                model.setRowCount(0);
             }
         } catch (IOException | BackendException e) {
             JOptionPane.showMessageDialog(this, "Error al buscar compras: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -216,222 +419,15 @@ public class HistorialComprasCliente extends javax.swing.JFrame {
         this.dispose();
     }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tablaCompras = new javax.swing.JTable();
-        btnVolver = new javax.swing.JButton();
-        txtId = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        txtHora = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        txtFecha = new javax.swing.JTextField();
-        txtIdUsuario = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(0, 0, 51));
-
-        jLabel1.setFont(new java.awt.Font("Liberation Sans Narrow", 2, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Historial de Compras");
-
-        jLabel3.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Aquí podrás ver el historial de tus compras");
-
-        tablaCompras.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "Id", "Fecha", "Hora", "Id Usuario", "Producto", "Total"
-            }
-        ));
-        jScrollPane1.setViewportView(tablaCompras);
-
-        btnVolver.setText("Volver");
-        btnVolver.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVolverActionPerformed(evt);
-            }
-        });
-
-        txtId.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jLabel4.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Id");
-
-        txtHora.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jLabel5.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("Hora");
-
-        jLabel6.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("Fecha");
-
-        txtFecha.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        txtIdUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jLabel7.setFont(new java.awt.Font("URW Bookman", 0, 15)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("Id usuario");
-
-        btnBuscar.setBackground(new java.awt.Color(51, 51, 255));
-        btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7)
-                            .addComponent(btnVolver)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(41, 41, 41)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(433, 433, 433)
-                        .addComponent(jLabel3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jLabel1)
-                .addGap(13, 13, 13)
-                .addComponent(jLabel3)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(134, 134, 134)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(98, 98, 98)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(57, 57, 57)
-                .addComponent(btnVolver)
-                .addContainerGap(22, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(HistorialComprasCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new HistorialComprasCliente().setVisible(true);
-            }
+        EventQueue.invokeLater(() -> {
+            new HistorialComprasCliente().setVisible(true);
         });
     }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnVolver;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tablaCompras;
-    private javax.swing.JTextField txtFecha;
-    private javax.swing.JTextField txtHora;
-    private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtIdUsuario;
-    // End of variables declaration//GEN-END:variables
 } 

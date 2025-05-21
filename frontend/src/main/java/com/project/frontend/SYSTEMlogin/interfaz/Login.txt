@@ -1,6 +1,0 @@
-ventana de login aqui
-
-txtCorreo
-txtContrasena
-btnLogin
-btnRegistrarse

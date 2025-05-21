@@ -1,7 +1,0 @@
-ventana de formulario para modificar una compra
-
-txtBuscar
-btnBuscar
-txtProducto
-btnModificar
-btnVolver
