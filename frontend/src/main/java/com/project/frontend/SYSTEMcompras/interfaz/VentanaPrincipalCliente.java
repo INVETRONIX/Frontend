@@ -422,8 +422,8 @@ public class VentanaPrincipalCliente extends JFrame {
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {
         Login login = new Login();
         login.setVisible(true);
-        this.dispose();
         TokenManager.getInstance().clearToken();
+        this.dispose();
     }
 
     public static void main(String args[]) {

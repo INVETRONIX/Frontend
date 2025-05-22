@@ -328,8 +328,8 @@ public class VentanaPrincipalAdmin extends JFrame {
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         Login cambio = new Login();
         cambio.setVisible(true);
-        this.dispose();
         TokenManager.getInstance().clearToken();
+        this.dispose();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnCerrarSesion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion1ActionPerformed

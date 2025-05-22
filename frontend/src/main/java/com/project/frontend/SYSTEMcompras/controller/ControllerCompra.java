@@ -20,7 +20,8 @@ import com.project.frontend.SYSTEMcompras.model.Compra;
 import com.project.frontend.SYSTEMcompras.service.ICompraService;
 import com.project.frontend.core.BackendException;
 import com.project.frontend.core.HandlerErrorResponse;
-
+import com.project.frontend.core.interceptorToken.Auth;
+import okhttp3.OkHttpClient;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -31,6 +32,9 @@ public class ControllerCompra {
     private final HandlerErrorResponse handlerErrorResponse;
 
     public ControllerCompra() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new Auth())
+                .build();
         // Crear adaptadores personalizados para LocalDate y LocalTime
         Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
@@ -39,6 +43,7 @@ public class ControllerCompra {
 
         Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 
@@ -132,7 +137,7 @@ public class ControllerCompra {
         return null;
     }
 
-    public List<Compra> findByUsuario(Long idUsuario) throws IOException, BackendException{
+    public List<Compra> findByUsuarioId(Long idUsuario) throws IOException, BackendException{
         Response<List<Compra>> response = apiService.findByUsuarioId(idUsuario).execute();
         if(response.isSuccessful()){
             return response.body();

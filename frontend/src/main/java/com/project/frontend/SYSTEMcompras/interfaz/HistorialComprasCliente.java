@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import com.project.frontend.SYSTEMcompras.controller.ControllerCompra;
 import com.project.frontend.SYSTEMcompras.model.Compra;
+import com.project.frontend.SYSTEMlogin.data.TokenManager;
 import com.project.frontend.core.BackendException;
 import java.awt.*;
 
@@ -260,8 +261,8 @@ public class HistorialComprasCliente extends JFrame {
     private void llenarTabla() throws IOException {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(new Object[]{"ID", "Fecha", "Hora", "ID Usuario", "Producto", "Total"});
-        
-        List<Compra> lista = controller.getAllCompras();
+        Long userId = TokenManager.getInstance().getUserId();
+        List<Compra> lista = controller.findByUsuarioId(userId);
         if (lista == null || lista.isEmpty()) {
             tablaCompras.setModel(model);
             return;
@@ -416,6 +417,8 @@ public class HistorialComprasCliente extends JFrame {
     }
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
+        VentanaPrincipalCliente ventana = new VentanaPrincipalCliente();
+        ventana.setVisible(true);
         this.dispose();
     }
 
