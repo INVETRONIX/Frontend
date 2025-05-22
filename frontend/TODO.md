@@ -1,5 +1,7 @@
 # Tareas pendientes
 
+- [ ] Mejoras y BUGS
 
-- [ ] vista principal de cliente
+## Producccion
 
+- [ ] Cambiar retrofit para que se conecte a render
