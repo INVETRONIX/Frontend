@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ControllerUsuario {
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = "https://invetronix.onrender.com";
     private final IRegistroService apiService;
     private final HandlerErrorResponse handlerErrorResponse;
 
